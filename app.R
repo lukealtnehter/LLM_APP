@@ -1,13 +1,21 @@
-library(shiny)
-library(jsonlite)
-library(shinyjs)
-library(jsonvalidate)
-library(readxl)
-library(writexl)
-library(tidyverse)
-library(ollamar)
-library(httr2)
-library(arsenal)
+required_packages <- c(
+  "shiny", "jsonlite", "shinyjs", "jsonvalidate",
+  "readxl", "writexl", "tidyverse", "ollamar",
+  "httr2", "arsenal"
+)
+
+# Function to install missing packages
+install_if_missing <- function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
+
+# Install and load packages
+invisible(lapply(required_packages, function(pkg) {
+  install_if_missing(pkg)
+  library(pkg, character.only = TRUE)
+}))
 
 # JSON app
 source("JSON/ui.R")      
