@@ -57,10 +57,10 @@ server <- function(input, output, session) {
       
       # Ensure file has a .json extension
       ext <- tools::file_ext(input$schema_file$name)
-      if (tolower(ext) != "json") {
+      if (tolower(ext) != "json" & tolower(ext) != "txt") {
         showModal(modalDialog(
           title = "Invalid file type",
-          "Please upload a valid .json schema file.",
+          "Please upload a valid .json or .txt schema file.",
           easyClose = TRUE,
           footer = NULL
         ))

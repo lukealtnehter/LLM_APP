@@ -21,7 +21,7 @@ ui <-
       column(
         width = 8,
         fluidRow(
-          column(6, fileInput(("schema_file"), "Upload JSON Schema (.json)")),
+          column(6, fileInput(("schema_file"), "Upload JSON Schema (.json/.txt)")),
           column(6, fileInput(("empty_examples"), "Upload Examples (.xlsx)"))
         ),
         h4("Example Text"),
