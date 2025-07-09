@@ -27,7 +27,7 @@ ui <-  fluidPage(
         tags$hr(),
         textInput(("id_column"), "ID Column", value = ""),
         fluidRow(
-          column(3, textInput(("llm_address"), "BIOHPC node", value = "")),
+          column(3, textInput(("llm_address"), "BIOHPC node", value = "172.18.227.")),
           column(3, selectInput(("llm_model"), "Model", choices = c("Need to specify IP address first"))),
           column(3, textInput(("llm_context"), "Context window", value = "4000")),
           column(3, uiOutput(("word_count_info")))

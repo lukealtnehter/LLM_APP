@@ -12,7 +12,7 @@ ui <-  fluidPage(
   ),
   tags$hr(),
   fluidRow(
-    column(2, textInput(("batch_address"), "BIOHPC node", value = "")),
+    column(2, textInput(("batch_address"), "BIOHPC node", value = "172.18.227.")),
     column(3, selectInput(("batch_model"), "Model", choices = c("Need to specify IP address first"))),
     column(2, textInput(("batch_context"), "Context window", value = "4000")),
     column(2, uiOutput(("batch_word_count")))
