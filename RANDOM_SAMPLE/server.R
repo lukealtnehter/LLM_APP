@@ -31,6 +31,16 @@ server <- function(input, output, session) {
     }
   })
   
+
+  list_files <- list.files("example prompt and schema files",recursive = T)
+  updateSelectInput(session, "select_schema", 
+                    choices = c("Please select" = "", list_files[grepl("(?i)schema", list_files)]),
+                    selected = "")
+  updateSelectInput(session, "select_prompt", 
+                    choices = c("Please select" = "", list_files[grepl("(?i)prompt", list_files)]),
+                    selected = "")
+  
+  
   observeEvent(input$batch_xlsx, {
     req(input$batch_xlsx)
     
