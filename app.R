@@ -17,6 +17,8 @@ invisible(lapply(required_packages, function(pkg) {
   library(pkg, character.only = TRUE)
 }))
 
+# source("r functions/LLM extract function.R")
+
 # JSON app
 source("JSON/ui.R")      
 json_ui <- ui

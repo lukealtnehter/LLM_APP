@@ -14,6 +14,7 @@ ui <-  fluidPage(
   fluidRow(
     column(2, textInput(("batch_address"), "BIOHPC node", value = "172.18.227.")),
     column(3, selectInput(("batch_model"), "Model", choices = c("Need to specify IP address first"))),
+    column(3, selectInput(("input_column"), "Input Column", choices = c("Need to upload Batch first"))),
     column(2, textInput(("batch_context"), "Context window", value = "4000")),
     column(2, uiOutput(("batch_word_count")))
   ),

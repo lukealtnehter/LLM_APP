@@ -1,7 +1,7 @@
 server <- function(input, output, session) {
   nested_colnames <- reactiveVal(NULL)
   progress_status <- reactiveVal("Waiting for submission...")
-  rv <- reactiveValues(test = NULL)
+  rv <- reactiveValues(output_data = NULL)
   batch_data <- reactiveVal()
   batch_index <- reactiveVal(1)
   collapsed_batch_prompt <- reactiveVal()
@@ -48,11 +48,15 @@ server <- function(input, output, session) {
     
     # Try reading the file
     tryCatch({
-      df <- readxl::read_excel(input$batch_xlsx$datapath, col_names = FALSE)
+      #df <- readxl::read_excel(input$batch_xlsx$datapath, col_names = FALSE)
+      df <- readxl::read_excel(input$batch_xlsx$datapath)
       
       if (ncol(df) >= 1) {
-        full_batch_data(df[[1]])
-        batch_index(1)
+        full_batch_data(df)
+        
+        updateSelectInput(session, "input_column", choices = names(df), selected = names(df)[1])
+        
+        #batch_index(1)
       } else {
         showNotification("The uploaded Excel file is empty or has no columns.", type = "error")
       }
@@ -91,12 +95,14 @@ server <- function(input, output, session) {
     sample_n <- sampled_n()
     if (!is.null(sample_n) && sample_n > 0 && sample_n < n) {
       # set.seed(1)  
-      batch_data(sample(data, sample_n))
+      #batch_data(sample(data, sample_n))
+      batch_data(data[sample(n, sample_n),])
     } else {
       batch_data(data)
     }
   })
   
+
   estimate_batch_tokens <- function(text) {
     words <- strsplit(text, "\\s+")[[1]]
     word_count <- length(words)
@@ -144,7 +150,7 @@ server <- function(input, output, session) {
     prompt_stats <- estimate_batch_tokens(prompt_text)
     longest_example <- ""
     example_stats <- list(words = 0, tokens = 0)
-    examples <- batch_data()
+    examples <- batch_data()[[input$input_column]]
     if (!is.null(examples) && length(examples) > 0) {
       word_counts <- sapply(examples, function(x) length(strsplit(x, "\\s+")[[1]]))
       longest_example <- examples[which.max(word_counts)]
@@ -158,24 +164,24 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$submit_batch, {
-    req(input$batch_json, collapsed_batch_prompt(), batch_data(), input$batch_model)
+    req(input$batch_json, collapsed_batch_prompt(), batch_data(), input$batch_model,input$input_column)
     
     batch_schema <- fromJSON(input$batch_json$datapath, simplifyVector = FALSE)
     full_prompt <- collapsed_batch_prompt()
-    input_text_column <- "examples"
+    input_text_column <- input$input_column
     output_column <- input$batch_model
     seed_num <- 1234
     
     # Create a working dataframe
-    test <- tibble(!!input_text_column := batch_data())
-    
-    test[[paste0(output_column, "_time")]] <- numeric(nrow(test))
-    
+    #input_data <- tibble(!!input_text_column := batch_data())
+    input_data <- batch_data()
+    # test[[paste0(output_column, "_time")]] <- numeric(nrow(test))
+    # 
     messages_list <- list(list(role = "system", content = full_prompt))
     
     withProgress(message = "Running model inference...", value = 0, {
-      for (i in seq_len(nrow(test))) {
-        incProgress(1 / nrow(test), detail = paste0("Running row ", i, " of ", nrow(test)))
+      for (i in seq_len(nrow(input_data))) {
+        incProgress(1 / nrow(input_data), detail = paste0("Running row ", i, " of ", nrow(input_data)))
         
         start_time <- Sys.time()
         result <- tryCatch({
@@ -184,7 +190,7 @@ server <- function(input, output, session) {
             model = input$batch_model,
             message = create_messages(
               messages_list,
-              list(content = test[[input_text_column]][i], role = "user")
+              list(content = input_data[[input_text_column]][i], role = "user")
             ),
             format = batch_schema,
             output = "text",
@@ -194,36 +200,59 @@ server <- function(input, output, session) {
           )
         }, error = function(e) {
           message("Error in row ", i, ": ", conditionMessage(e))
-          NULL
+          return(NULL)
         })
         
-        duration <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
-        if (!is.null(result)) {
-          parsed <- tryCatch(fromJSON(result), error = function(e) NULL)
-          if (!is.null(parsed$data)) {
-            test[[output_column]][i] <- list(as_tibble(parsed$data))
-          }
+        end_time <- Sys.time()
+        duration_sec <- as.numeric(difftime(end_time, start_time, units = "secs"))
+        
+        if (length(result) > 0 && !is.null(result)) {
+          parsed <- fromJSON(result)
+          input_data[[output_column]][i] <- list(parsed$data)
+          input_data[[paste0(output_column, "_time")]][i] <- duration_sec
         }
         
-        test[[paste0(output_column, "_time")]][i] <- duration
+        # duration <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
+        # if (!is.null(result)) {
+        #   parsed <- tryCatch(fromJSON(result), error = function(e) NULL)
+        #   if (!is.null(parsed$data)) {
+        #     test[[output_column]][i] <- list(as_tibble(parsed$data))
+        #   }
+        # }
+        # 
+        # test[[paste0(output_column, "_time")]][i] <- duration
       }
     })
     
-    rv$test <- test
+    # Process and filter the LLM output
+    llm_sym <- sym(output_column)
+    output_data <- input_data %>%
+      filter(map_chr(!!llm_sym, class) == 'data.frame') %>%
+      unique() %>%
+      unnest(!!llm_sym, keep_empty = TRUE) %>%
+      bind_rows(
+        input_data %>%
+          filter(map_chr(!!llm_sym, class) != 'data.frame') %>%
+          select(-all_of(input$batch_model))
+      )
+    
+    
+    
+    rv$output_data <- output_data
     progress_status("Model run complete. You may now download results.")
   })
   
   output$download_batch <- downloadHandler(
     filename = function() paste0(input$filename_batch,".xlsx"),
     content = function(file) {
-      req(rv$test)
+      req(rv$output_data)
       
-      output_column <- input$batch_model
-      
-      # Unnest the nested model output
-      unnested_df <- rv$test %>%
-        unnest(cols = all_of(output_column))
-      
+      # output_column <- input$batch_model
+      # 
+      # # Unnest the nested model output
+      # unnested_df <- rv$test %>%
+      #   unnest(cols = all_of(output_column))
+      unnested_df <- rv$output_data
       # Write to Excel
       writexl::write_xlsx(unnested_df, path = file)
     }
