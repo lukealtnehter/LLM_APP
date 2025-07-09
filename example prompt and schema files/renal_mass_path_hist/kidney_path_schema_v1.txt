@@ -1,0 +1,112 @@
+{
+  "title": "kidney_path_schema_v1",
+  "description": "schema for extracting renal mass attributes. Created 06/16/25",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "side": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["L", "R"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([0-9]+\\.[0-9]+)( x [0-9]+\\.[0-9]+){0,2}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hist": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["ccRCC", "pRCC", "cdRCC", "uRCC", "tRCC", "HLRCC", "non-RCC", "chRCC", "ACD-RCC", "ELOC-RCC", "ESC-RCC", "Tc-RCC", "MTSC-RCC", "SDH-def RCC", "Hybrid", "ONC", "PA", "RHB", "JGCT", "RMICT", "MA", "ccpRCT", "MCRNLMP", "AML", "ADC", "GCT", "PDC", "SAR", "WT", "MEST", "UC", "BH"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "enum": [1, 2, 3, 4]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pT": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["X", "0", "1a", "1b", "2a", "2b", "3a", "3b", "3c", "4"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pN": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["0", "1"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pM": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["0", "1"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": ["id", "side", "size", "hist", "grade", "pT", "pN", "pM"]
+      }
+    }
+  },
+  "required": [
+    "data"
+  ]
+}
+
+
+
+

@@ -1,0 +1,224 @@
+Instruction:
+Focus only on findings in the kidney. Extract all solid, non-cystic renal masses 
+from the narrative that are concerning for kidney cancer. Ignore all benign
+cysts and findings in other organs. If there are no concerning kidney 
+lesions, return an empty dataframe. Return as JSON.
+
+For each lesion, extract the following fields when present in the report. If a 
+field is not mentioned in the text, return null. Reports were made by humans so 
+beware of obvious typos (mixing up the side of the lesion from the impression to
+the report).
+
+lesion_id: A unique identifier that must be in the format "lesion #n". This may 
+not always be explicitly stated for a lesion. Rerports with single lesions 
+will always be "lesion #1". Identify the number of concerning non-cystic kidney
+lesions. If there are multiple lesions that are not explicitly labeled, you 
+label them in the order they are mentioned in the report (lesion #1 is menitoned
+first followed by lesion #2). 
+
+truesize: "A (ap) x B (ll) x C (cc)" format if all measurements and dimensions 
+are given. Give all the dimenisions  and measurments provided, if there are 
+missing dimensions leave them blank- do not put 0 as this implies the dimension 
+was given as "0". This field will be  "0.5" for subcentimeter lesions. If a size
+is not given for the lesion, the field will be "null" This is the current 
+reported size of the lesion.
+
+size_unit: Unit of all measurments
+- cm
+- mm
+
+ccLS: Clear cell Likelihood Score (1–5 explicitly mentioned for each lesion, if 
+ccls is not reported for a lesions ie: in bosniak cystic lesions, put null. Note: Do not infer ccLS based on other classifications such as the Bosniak cyst classification—these are distinct systems.
+
+side: which kidney is the lesion loacated in
+- left
+- right
+
+location: described anatomical location of the individual lesion within the 
+kidney. Location will be described in the report by  a combination of the 
+following words: 
+
+height one of: 
+- mid (sometimes referred to as interpolar) 
+- lower
+- upper 
+Laterality one of: 
+- medial
+- lateral  
+AP one of: 
+- midline
+- anterior
+- posterior
+
+- null if not mentioned
+
+Choose the list of descriptors that used for an individual lesion in the report. 
+
+prior_size: This must be a prior size, not the current size. May or may not be 
+referenced. "A (ap) x B (ll) x C (cc)" format should be used if all dimensions 
+are given. Give as many dimensions as the report says,if there are 
+missing dimensions leave them blank- do not put 0 as this implies the dimension 
+was given as "0". For previously "subcentimeter" lesions, this field should be 
+"0.5". For Lesions described as stable or unchanged you will put the copy 
+prior_size from the truesize. For lesions that were explicitly not seen in the 
+comparison, put "not seen". Put null if a prior size is not mentioned.
+
+prior_date: This is the date of the "prior_size". Most commonly found in the 
+"COMPARISON:" section. The comparison is a previous imaging study (mri or ct). 
+If prior_size is not reported for a lesion, then prior_date must also be null. 
+Some lesions may report a previous size and directly give a pervious date. Be 
+carful to not put the date listed at the bottom of the report as this is the 
+date the report was signed. Format is YYYY-MM-DD.
+
+mri_staging: Tumor staging of the lesion given in the report: 
+- T1a
+- T1b 
+- T2 
+- T3
+- T4
+- null if not mentioned
+
+percent_endophytic: Quanification of the degree the lesions is endophytic: 
+- <25%
+- 25-50%
+- 50-75%
+- 75-99%
+- 100%
+- null if not mentioned
+
+depth_extension: how deep the lesion extends in the kidney
+- Renal parenchyma
+- Renal/hilar interface
+- Hilar fat/collecting system
+- null if not mentioned
+
+t2_signal_relative_to_renal_cortex: T2 signal relative to the renal cortex and 
+how homogenous is the signal:
+one of:
+- Hyperintense
+- Isointense
+- Hypointense
+and one of:
+- Slightly heterogeneous ("Slightly" and "mildly" are interchangeable.)
+- Homogeneous
+- Heterogeneous
+
+- null if not mentioned  
+
+
+t1_chemical_shift: does the t1 chemical shift artifact suggest a lesion with fat:
+- Macroscopic fat
+- Microscopic fat ("Intravoxel" may be used instead of "microscopic".)
+- No fat
+- null if not mentioned  
+
+segmental_inversion_enhancement: is there segmental inversion enhacement in the 
+lesion:
+- Present
+- Absent
+- Not applicable
+- null if not mentioned
+
+corticomedullary_enhancement_relative_to_renal_cortex: how does the 
+corticomedulary (delayed) phase enhance relative to the renal coretex and how homogenous 
+is the signal:
+
+Relative enhancement one of: 
+- Intense = 100%
+- Moderate = 50%
+- Mild = 30%
+- NA 
+
+Homogenecity one of: 
+- Homogeneous 
+- Slightly heterogeneous
+- Heterogeneous
+- NA
+
+- null if not mentioned
+
+high_b_value_dwi: High b-value DWI (diffusion weighted imaging) + ADC 
+(apparent diffusion coeffecient) of the lesion
+
+DWI one of:
+- Hyperintensity
+- Isointense
+- Hypointense
+ADC one of: 
+- Hyperintensity
+- Isointense
+- Hypointense
+
+
+delayed_enhancement: does the lesion have delayed enhancement. One of:
+- plateau (+/-10%)
+- progressive (>10%)
+- washout (<10%)
+- NA 
+- null if not mentioned
+
+
+fat_poor_aml_suspected: Is the lesion suspected to be fat poor aml 
+(angiomyolipoma)?:
+- Yes
+- No 
+- null if not mentioned explicitly. 
+
+tumor_margin: tumor margin description- one of: 
+- frankly infiltrative
+- ill-defined focal 
+- well defined, complete
+- null if not mentioned
+
+tumor_invasion: Extrarenal invasion of the mass one of:
+- Possible (lobulated margin)
+- Not present (smooth margin)
+- Clearly present (frank infiltration into perirenal fat)
+or null if not mentioned
+
+renal_vein_anatomy: three anatomic variants of the renal vein of interest:
+- usual 
+- circumaortic 
+- retroaortic
+- null if not mentioned. 
+
+Must be the same for all lesions on a report.as the anatomy is shared.
+
+renal_vein_thrombus: presence of renal vein thrombus one of:
+- Absent
+- intra-renal
+- extra-renal renal vein = Level 0
+- IVC no more than 2 cm above the renal vein = Level I
+- IVC more than 2 cm above the renal vein but below hepatic vein = Level II
+- IVC above hepatic vein but below diaphragm  = Level III
+- Supra-diaphragmatic IVC or right atrium = Level IV
+- null if not mentioned
+
+Must be the same for all lesions on a report as the anatomy is shared.
+
+renal_artery_anatomy: anatomical description of the anatomy of either 
+renal artery. Only one side needs have an accessory to be included. One of:  
+- Single artery
+- Accessory artery for upper pole 
+- Accessory artery for lower pole
+- Accessory arteries for both upper and lower pole
+- null if not mentioned. 
+
+Must be the same for all lesions on a report as the anatomy is shared.
+
+renal_artery_stenosis: Quantification of the degree of renal artery stenosis:
+- absent
+- 50%
+- 50-75%
+- 75-99% 
+- null if not mentioned. 
+
+Must be the same for all lesions on a report as the anatomy is shared.
+
+Final Reminder:
+The information in the reports may be from a structured template that 
+radiologists fill out. Some templates may not have every field. Some reports 
+will be unstructued.
+
+**Do not guess, assume, or infer. Only include solid, non-cystic lesions of the
+ kidney** 
