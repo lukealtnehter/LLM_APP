@@ -44,6 +44,7 @@ source("RANDOM_SAMPLE/server.R")
 random_server <- server
 
 
+
 ui <- navbarPage("",
   tabPanel("JSON ENTRY", json_ui),
   tabPanel("EXAMPLE ENTRY", examples_ui),
