@@ -1,0 +1,57 @@
+{
+  "title": "uterine_lesion_rad_schema_v1",
+  "description": "Schema for extracting uterine lesion (fibroid, myoma, leiomyoma, leiomyomata) attributes from MRI radiology reports. Created 07/11/25",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "anyOf": [
+              { "type": "integer", "minimum": 1, "maximum": 10 },
+              { "type": "null" }
+            ]
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([0-9]+(\\.[0-9]+)?)( x [0-9]+(\\.[0-9]+)?){0,2}$"
+              },
+              { "type": "null" }
+            ]
+          },
+          "location": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "null" }
+            ]
+          },
+          "description": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "null" }
+            ]
+          },
+          "metastatic_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["metastatic", "non-metastatic"]
+              },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": ["id", "size", "location", "description", "metastatic_status"]
+      }
+    }
+  },
+  "required": ["data"]
+}
+
+
+
+
