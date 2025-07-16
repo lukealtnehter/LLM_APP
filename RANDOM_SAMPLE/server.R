@@ -41,6 +41,19 @@ server <- function(input, output, session) {
                     selected = "")
   
   
+  observeEvent(input$select_schema, {
+    # Check if a schema file is selected, then send the value to input$batch_json
+    if (input$select_schema != "") {
+      schema_path <- file.path("example prompt and schema files", input$select_schema)
+      lines <- readLines(schema_path, warn = FALSE)
+      batch_prompt_text <- paste(lines, collapse = "\n")
+      collapsed_batch_prompt(batch_prompt_text)
+    } 
+  })
+    
+  
+  
+  
   observeEvent(input$batch_xlsx, {
     req(input$batch_xlsx)
     
@@ -87,7 +100,7 @@ server <- function(input, output, session) {
       return()
     }
     sample_size <- suppressWarnings(as.integer(input$sample_size))
-    n <- length(full_batch_data())  # Use full batch for validation
+    n <- nrow(full_batch_data())  # Use full batch for validation
     
     if (!is.na(sample_size) && sample_size > 0 && sample_size < n) {
       sampled_n(sample_size)
@@ -101,7 +114,7 @@ server <- function(input, output, session) {
   observe({
     req(full_batch_data())
     data <- full_batch_data()
-    n <- length(data)
+    n <- nrow(data)
     sample_n <- sampled_n()
     if (!is.null(sample_n) && sample_n > 0 && sample_n < n) {
       # set.seed(1)  
