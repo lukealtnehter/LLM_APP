@@ -31,6 +31,17 @@
               }
             ]
           },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(upper|mid|lower)? ?(medial|lateral)? ?(anterior|posterior|midline)?$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "size": {
             "anyOf": [
               {
@@ -46,7 +57,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": ["ccRCC", "pRCC", "cdRCC", "uRCC", "tRCC", "HLRCC", "non-RCC", "chRCC", "ACD-RCC", "ELOC-RCC", "ESC-RCC", "Tc-RCC", "MTSC-RCC", "SDH-def RCC", "Hybrid", "ONC", "PA", "RHB", "JGCT", "RMICT", "MA", "ccpRCT", "MCRNLMP", "AML", "ADC", "GCT", "PDC", "SAR", "WT", "MEST", "UC", "BH"]
+                "enum": ["ccRCC", "pRCC", "cdRCC", "uRCC", "tRCC", "HLRCC", "non-RCC", "chRCC", "ACD-RCC", "ELOC-RCC", "ESC-RCC", "Tc-RCC", "MTSC-RCC", "SDH-def RCC", "Hybrid", "ONC", "ONCNEO", "PA", "RHB", "JGCT", "RMICT", "MA", "ccpRCT", "MCRNLMP", "AML", "ADC", "GCT", "PDC", "SAR", "WT", "MEST", "UC", "BH"]
               },
               {
                 "type": "null"
