@@ -109,7 +109,7 @@
             ]
           }
         },
-        "required": ["id", "side", "size", "hist", "grade", "pT", "pN", "pM"]
+        "required": ["id", "side","location", "size", "hist", "grade", "pT", "pN", "pM"]
       }
     }
   },
