@@ -7,7 +7,7 @@ engineering, validation on a random sample, and finally the creation of
 the database.
 
 <figure>
-<img src="README/Figure_1.jpg" alt="Figure 1: LLM Pipeline Schematic" />
+<img src="README/figure_1.jpg" alt="Figure 1: LLM Pipeline Schematic" />
 <figcaption aria-hidden="true">Figure 1: LLM Pipeline
 Schematic</figcaption>
 </figure>
