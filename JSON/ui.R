@@ -5,6 +5,9 @@ ui <-  fluidPage(
         textInput(("title"), "Schema Title"),
         textInput(("description"), "Description"),
         selectInput(("schema_type"), "Schema Type", choices = c("Object" = "object", "Array" = "array")),
+        #add text
+        p("Choose 'object' if each report gives you one value per feature, even if there are multiple features (e.g., Pulmonary Embolism: Yes, Number of Lesions: 2)."),
+        p("Choose 'array' when you need a separate row for each repeated detail in the report (e.g., size and location for each individual lesion)."),
         tags$hr(),
         h4("Add Properties"),
         textInput(("prop_name"), "Property Name"),
