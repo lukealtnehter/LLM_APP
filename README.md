@@ -24,7 +24,7 @@ gains in efficiency with statistically verifiable database accuracy.
 
 The only required input is a large database of unstructured text from
 which you wish to extract information with. This app requires specific
-formatting for thistext (which will be described in the the examples and
+formatting for this text (which will be described in the the examples and
 random sampling section).
 
 # JSON Schema Creation:
