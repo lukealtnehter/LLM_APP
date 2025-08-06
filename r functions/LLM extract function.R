@@ -51,7 +51,7 @@ llm_extract <- function(
     
     if (length(temp) > 0 && !is.null(temp)) {
       parsed <- jsonlite::fromJSON(temp)
-      mydata[[output_column]][i] <- list(parsed$data)
+      mydata[[output_column]][i] <- list(data.frame(parsed$data))
       mydata[[paste0(llm_model, "_time")]][i] <- duration_sec
     }
   }
