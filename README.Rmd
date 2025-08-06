@@ -1,16 +1,19 @@
 ---
 title: "README"
-output:
+output: 
+# md_document
   html_document:
-    toc: true          
-    toc_depth: 3       
-    toc_float: true    
+    toc: true
+    toc_depth: 3
+    toc_float: true
     number_sections: false
 ---
 
 # LLM Assisted Database creation:
 
 This project is a shiny app that allows the user to created databases with the assistance of a LLM. This process consists of JSON schema creation, selection ofa representative sample with ground truth, prompt engineering, validation on a random sample, and finally the creation of the database. 
+
+![Figure 1: LLM Pipeline Schematic](README/Figure_1.jpg)
 
 ## Who is this for?
 This app is specialized for the extraction information from unstructured text. Unstructured information that is too complex to extract with regular expression typically requires manual extraction. This process is slow and not without error. This pipeline allows for the exponential gains in efficiency with statistically verifiable database accuracy. 
