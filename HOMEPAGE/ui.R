@@ -1,5 +1,4 @@
 homepage_ui <-  fluidPage(
-  titlePanel("Home"),
   tags$style(HTML("
       #example_check {
         white-space: pre-wrap;
@@ -33,6 +32,5 @@ homepage_ui <-  fluidPage(
       }
     ")),
   
-  tags$hr(),
   includeMarkdown("README.md")
 )

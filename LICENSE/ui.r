@@ -1,5 +1,4 @@
 license_ui <- fluidPage(
-  titlePanel("Home"),
   tags$style(HTML("
       #example_check {
         white-space: pre-wrap;
@@ -33,6 +32,5 @@ license_ui <- fluidPage(
       }
     ")),
   
-  tags$hr(),
   includeMarkdown("license.md")
 )
