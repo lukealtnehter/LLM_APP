@@ -19,44 +19,99 @@ invisible(lapply(required_packages, function(pkg) {
 
 # source("r functions/LLM extract function.R")
 
+#HOMEPAGE app
+source("HOMEPAGE/ui.R")
+source("HOMEPAGE/server.R")
+
 # JSON app
 source("JSON/ui.R")      
-json_ui <- ui
 source("JSON/server.R")  
-json_server <- server
 
 # EXAMPLES app
 source("EXAMPLES/ui.R")      
-examples_ui <- ui
 source("EXAMPLES/server.R")  
-examples_server <- server
 
 # PROMPT ENGINEERING app
 source("PROMPT_ENGINEERING/ui.R")
-prompt_ui <- ui
 source("PROMPT_ENGINEERING/server.R")
-prompt_server <- server
 
 # RANDOM SAMPLE app
 source("RANDOM_SAMPLE/ui.R")
-random_ui <- ui
 source("RANDOM_SAMPLE/server.R")
-random_server <- server
 
+# LICENSE page
+source("LICENSE/ui.R")
+source("LICENSE/server.R")
 
 
 ui <- navbarPage("",
-  tabPanel("JSON ENTRY", json_ui),
-  tabPanel("EXAMPLE ENTRY", examples_ui),
-  tabPanel("PROMPT ENGINEERING", prompt_ui),
-  tabPanel("RANDOM SAMPLE OR FULL RUN", random_ui )
+                 # Add custom CSS for scrollable content
+                 tags$head(
+                   tags$style(HTML("
+      /* Make the body and html full height */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Fix the navbar at top */
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        margin-bottom: 0;
+      }
+      
+      /* Add top padding to account for fixed navbar */
+      .tab-content {
+        padding-top: 70px; /* Adjust based on your navbar height */
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+      }
+      
+      /* Ensure tab panes fill the container */
+      .tab-pane {
+        height: 100%;
+        padding: 15px;
+      }
+      
+      /* Make images responsive within tabs */
+      .tab-pane img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+      
+      .tab-pane figure {
+        text-align: center;
+        margin: 20px 0;
+      }
+      
+      .tab-pane figcaption {
+        font-style: italic;
+        color: #666;
+        margin-top: 8px;
+      }
+    "))
+                 ),
+  tabPanel("HOME", homepage_ui),
+  tabPanel("Create Schema", json_ui),
+  tabPanel("Enter Example", examples_ui),
+  tabPanel("Engineer Prompt", prompt_ui),
+  tabPanel("Creat Database", random_ui ),
+  tabPanel("License",license_ui)
 )
 
 server <- function(input, output, session) {
+  homepage_server(input, output, session)
   json_server(input, output, session)
   examples_server(input, output, session)
   prompt_server(input, output, session)
   random_server(input, output, session)
+  license_server(input, output, session)
 }
 
 shinyApp(ui, server)

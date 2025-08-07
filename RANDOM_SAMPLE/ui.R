@@ -1,4 +1,4 @@
-ui <- fluidPage(
+random_ui <- fluidPage(
   useShinyjs(),
   titlePanel("Run a Sample or Entire Batch"),
   tags$hr(),

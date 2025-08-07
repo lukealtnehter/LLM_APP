@@ -1,0 +1,44 @@
+# License
+
+**Copyright (c) 2025 The University of Texas Southwestern Medical Center.**  
+**All rights reserved.**
+
+(1). Redistribution and use in source and binary forms, with or without modification, are permitted for academic research use only (subject to the limitations in the disclaimer below) provided that the following conditions are met:
+
+&nbsp;&nbsp;&nbsp;&nbsp;(a). Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+&nbsp;&nbsp;&nbsp;&nbsp;(b). Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;(c). Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+(2). ANY USE OR REDISTRIBUTION OF THIS SOFTWARE FOR COMMERCIAL PURPOSES, WHETHER IN SOURCE OR BINARY FORM, WITH OR WITHOUT MODIFICATION, IS EXPRESSLY PROHIBITED; ANY USE OR REDISTRIBUTION BY A FOR-PROFIT ENTITY SHALL COMPRISE USE OR REDISTRIBUTION FOR COMMERCIAL PURPOSES.
+
+(3). NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE. THIS SOFTWARE, AND ANY ACCOMPANYING DOCUMENTATION, IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE OR ANY OF ITS ACCOMPANYING DOCUMENTATION, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+(4). This software incorporates third-party open-source software components that are subject to the following licenses:
+
+(a) MIT License
+
+The following components are licensed under the MIT License. Copyright notices for these components are as follows:
+
+| Component | Copyright | Source/Version/Time |
+|-----------|-----------|-------------------|
+| **DT** | (c) 2015–2024 RStudio, PBC | [GitHub](https://github.com/rstudio/DT), v0.33, Released April 2024 |
+| **tidyverse** | (c) 2016–2024 Hadley Wickham and tidyverse contributors | [GitHub](https://github.com/tidyverse/tidyverse), v2.0.0, Released April 2024 |
+| **shinycssloaders** | (c) 2018–2024 Andrew Sali | [GitHub](https://github.com/andrewsali/shinycssloaders), v1.0.0, Released May 2024 |
+| **dplyr** | (c) 2014–2024 Hadley Wickham and dplyr contributors | [GitHub](https://github.com/tidyverse/dplyr), v1.1.4, Released April 2024 |
+| **htmltools** | (c) 2014–2024 RStudio, PBC | [GitHub](https://github.com/rstudio/htmltools), v0.5.8, Released April 2024 |
+| **gtsummary** | (c) 2019–2024 Daniel D. Sjoberg | [GitHub](https://github.com/ddsjoberg/gtsummary), v1.7.2, Released April 2024 |
+| **gt** | (c) 2019–2024 RStudio, PBC | [GitHub](https://github.com/rstudio/gt), v0.10.1, Released May 2024 |
+| **ollamar** | (c) 2023 Hauselin | [GitHub](https://github.com/hauselin/ollama-r), v0.1.0, Released August 2023 |
+| **jsonlite** | (c) 2014–2024 Jeroen Ooms | [GitHub](https://github.com/jeroen/jsonlite), v1.8.8, Released March 2024 |
+
+<br/>
+Permission is granted, free of charge, to any person obtaining a copy of this software and associated documentation files (“Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and;/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.  
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
+
+(5) General Notice.  Users of this software are required to comply with the terms of the above licenses when using, modifying or distributing the software, including the incorporated components.  
+
+

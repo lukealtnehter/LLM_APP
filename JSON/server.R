@@ -1,4 +1,4 @@
-server <- function(input, output, session) {
+json_server <- function(input, output, session) {
     #order of properties is defined so you can delete and then continue to add
     prop_order <- reactiveVal(character(0))
     

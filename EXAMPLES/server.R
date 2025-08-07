@@ -1,4 +1,4 @@
-server <- function(input, output, session) {
+examples_server <- function(input, output, session) {
     `%||%` <- function(a, b) if (!is.null(a)) a else b
     schema <- reactiveVal(NULL)
     raw_schema_text <- reactiveVal(NULL)

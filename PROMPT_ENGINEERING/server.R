@@ -1,4 +1,4 @@
-server <- function(input, output, session) {
+prompt_server <- function(input, output, session) {
     nested_colnames <- reactiveVal(NULL)
     nested_coltypes <- reactiveVal()
     rv <- reactiveValues(test = NULL)
