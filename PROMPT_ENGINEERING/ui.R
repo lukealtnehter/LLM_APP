@@ -1,4 +1,4 @@
-ui <-  fluidPage(
+prompt_ui <-  fluidPage(
     useShinyjs(),
     titlePanel("Prompt Engineering"),
     

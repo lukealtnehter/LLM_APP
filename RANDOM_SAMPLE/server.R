@@ -1,4 +1,4 @@
-server <- function(input, output, session) {
+random_server <- function(input, output, session) {
   nested_colnames <- reactiveVal(NULL)
   progress_status <- reactiveVal("Waiting for submission...")
   rv <- reactiveValues(output_data = NULL)

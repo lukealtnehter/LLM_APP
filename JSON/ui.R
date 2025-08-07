@@ -1,4 +1,4 @@
-ui <-  fluidPage(
+json_ui <-  fluidPage(
     titlePanel("JSON Schema Creator"),
     fluidRow(
       column(4,

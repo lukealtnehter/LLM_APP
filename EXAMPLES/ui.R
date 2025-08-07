@@ -1,4 +1,4 @@
-ui <-  
+examples_ui <-  
   fluidPage(
     useShinyjs(),
     titlePanel("Example Data Entry"),
