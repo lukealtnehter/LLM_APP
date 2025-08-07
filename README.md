@@ -2,7 +2,7 @@
 
 This project is a shiny app that allows the user to created databases
 with the assistance of a LLM. This process consists of JSON schema
-creation, selection ofa representative sample with ground truth, prompt
+creation, selection of a representative sample with ground truth, prompt
 engineering, validation on a random sample, and finally the creation of
 the database.
 
@@ -12,7 +12,7 @@ the database.
 Schematic</figcaption>
 </figure>
 
-## Who is this for?
+#### Who is this for?
 
 This app is specialized for the extraction information from unstructured
 text. Unstructured information that is too complex to extract with
@@ -20,7 +20,7 @@ regular expression typically requires manual extraction. This process is
 slow and not without error. This pipeline allows for the exponential
 gains in efficiency with statistically verifiable database accuracy.
 
-## What do I need?
+#### What do I need?
 
 The only required input is a large database of unstructured text from
 which you wish to extract information with. This app requires specific
@@ -35,12 +35,12 @@ screen. This schema allows for the LLMS output to follow precise
 formatting. When a schema is properly used, the output database requires
 no cleaning and facilitate straight forward analysis.
 
-## Name your schema:
+#### Name your schema:
 
 Give you schema a name and give a description (no effect on output but
 can be used for reference later so you know what the schema was about).
 
-## Object or Array:
+#### Object or Array:
 
 Specify whether you want to extract one object from each unstructured
 text or an array. Objects extract a single row of information from a
@@ -99,7 +99,7 @@ text, array extract numerous rows.
     </tbody>
     </table>
 
-## Object properties:
+#### Object properties:
 
 -   name: name of the property
 
@@ -142,19 +142,19 @@ text, array extract numerous rows.
 -   required: If the item cannot be null, then check required. If the
     item can be null, do not check.
 
-## Add/Remove property
+#### Add/Remove property
 
 If you make a mistake you can add or remove a property. The property
 added last will be removed. This can be repeated until all properties
 are gone.
 
-## file name:
+#### file name:
 
-enter file name for the schema to save as a .json file. Json files are
+Enter file name for the schema to save as a .json file. Json files are
 simply .txt files with specialized formatting. Minor errors can be
 corrected in any text editor.
 
-## download the schema:
+#### download the schema:
 
 Download the schema you have created to use in the next steps.
 
@@ -168,20 +168,21 @@ examples will be used to engineer a prompt. Prepare your examples by
 placing them in the first column in an excel file. There should be no
 columns names (data in A1:An with n examples).
 
-## input the .json file:
+#### input the .json file:
 
 Upload your json schema you created in the previous step. This will auto
 populate an example entry tab on the right half of the screen. Each
 property will be pulled up as a form. Enumerations will be provided as a
 drop down. Properties that allow null will populate a check box.
 
-## input an xlsx file:
+#### input an xlsx file:
 
 Input at least 20 of your representative examples here as the xlsx file.
 As a reminder: place examples in the first column in an excel file.
 There should be no columns names (data in A1:An with n examples).
 
-## input the data:
+#### input the data:
+Fill in the ground truth for each example. This information must be without error so be careful.
 
 -   add row: After you have finished a data row click the `add row`
     button. `Preview` will give you a visual of the data frame as well
@@ -194,23 +195,23 @@ There should be no columns names (data in A1:An with n examples).
 -   remove row: removed the last entry and clear the validation logic.
     Redo the entry and it will be revalidated.
 
-## arrows:
+#### arrows:
 
 Move forward or backward from each example. The json data and validation
 will be saved for each example.
 
-## File names:
+#### File names:
 
-enter file names without extensions.
+Enter file names without extensions.
 
-## download .rds:
+#### download .rds:
 
 Download the RDS file to use in the next step. There will be an
-`example` column and a `data` column with a nested dataframe of object
+`example` column and a `data` column with a nested data frame of object
 properties. This will be used for automating accuracy calculations for
 prompt engineering.
 
-## download .xslx: 
+#### download .xslx: 
 
 Downloaded the examples as a unnested .xslx file.
 This is commonly used to visualize the examples for accuracy. Note,
@@ -218,7 +219,48 @@ exporting to excel can mess with formats such as dates.
 
 # Prompt Engineering
 
-Step 3.
+In the next phase you will engineer a prompt based on your representative examples. Inputs for this
+phase are the JSON engineered in the first phase, the representative examples as a .rds file, and a valid 
+BIOHPC node. Enter the node address in the format `abc.de.fgh.ij`. 
+
+#### ID Column
+
+When you have an array schema, and ID column is usually required. This assigns an ID to each row and allows
+for a comparison to a ground truth irregardless of the order of the rows. Object schema do not usually contain 
+an ID columns and are just compared by the `examples` column. 
+
+#### BIOHPC Node
+
+Enter you assigned BIOHPC node in the format `abc.de.fgh.ij`. If the address is valid, you will be able to 
+choose from one of the available LLMs.
+
+#### Model
+
+Choose the LLM you would like to use for your task. Each model is trained on different data sets and thus will
+give different outputs for the same prompt.
+
+
+#### Context Window
+
+Enter the context window for the model based on your prompt and example legnth. A suggested minimum context 
+legnth is given based on the longest example provided and your prompt. The formula used is: 
+`context window = (word count of largest example + prompt) x (0.75)`.
+
+#### Prompt
+
+Based on you examples, a prompt template will be generated. The prompt will give the added context and 
+instructions for the LLM to complete your task. This prompt will be incrementally tweaked to increase the 
+predicted accuracy. 
+
+
+  - General:  A `General` text box will be populated for any task. In `General` you should provide the 
+  overview and relevant background information for you task. Finish every general prompt with the phrase 
+  `return as JSON` as this will cut down processing time. 
+
+  - Properties: Each property of an object will have its own prompt text box generated. Each property can be 
+  individually engineered to increase its accuracy. Any JSON formatting, enumerations, ranges etc. should be 
+  repeated in the property prompt to assist with processing time. Additionally any added context for an 
+  individual property should be added.
 
 # Random sampling
 
