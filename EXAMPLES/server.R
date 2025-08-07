@@ -212,7 +212,7 @@ server <- function(input, output, session) {
         
         conditional_input <- if (allows_null) {
           tagList(
-            checkboxInput(null_id, "Null", value = FALSE),
+            checkboxInput(null_id, "Null", value = TRUE),
             conditionalPanel(
               condition = paste0("!input['", null_id, "']"),
               input_ui
