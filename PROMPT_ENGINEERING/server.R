@@ -4,52 +4,62 @@ prompt_server <- function(input, output, session) {
     rv <- reactiveValues(test = NULL)
     
     output$example_file_ui <- renderUI({
-      fileInput(("example_file"), "Upload Completed Examples (.rds)")
+      fileInput(("example_file"), "Upload Completed Examples (.xlsx)")
     })
     
     observeEvent(input$example_file, {
       req(input$example_file)
       
-      ext <- tools::file_ext(input$example_file$name)
-      if (tolower(ext) != "rds") {
-        showModal(modalDialog(
-          title = "Invalid file type",
-          "Please upload a valid .rds file.",
-          easyClose = TRUE,
-          footer = modalButton("OK")
-        ))
-        
-        # Reset file input
-        output$example_file_ui <- renderUI({
-          fileInput("example_file", "Upload Example RDS File")
-        })
-        return()
-      }
+      example_excel <- read_excel(input$example_file$datapath, col_names = TRUE)
       
-      tryCatch({
-        df <- readRDS(input$example_file$datapath)
-        
-        if (!("data" %in% names(df)) || !is.data.frame(df$data[[1]])) {
-          showNotification("Invalid RDS structure: 'data' column with nested data frames is required.", type = "error")
-          return()
-        }
-        
-        first_nested <- df$data[[1]]
-        nested_colnames(names(first_nested))
-        
-      }, error = function(e) {
-        showModal(modalDialog(
-          title = "Error reading file",
-          paste("The uploaded file could not be read as a valid .rds file:", e$message),
-          easyClose = TRUE,
-          footer = modalButton("OK")
-        ))
-        
-        # Reset file input
-        output$example_file_ui <- renderUI({
-          fileInput("example_file", "Upload Example RDS File")
-        })
-      })
+      df <- example_excel %>%
+        nest(data = -examples)
+      
+      first_nested <- df$data[[1]]
+      
+      nested_colnames(names(first_nested))
+
+      
+      # ext <- tools::file_ext(input$example_file$name)
+      # if (tolower(ext) != "rds") {
+      #   showModal(modalDialog(
+      #     title = "Invalid file type",
+      #     "Please upload a valid .rds file.",
+      #     easyClose = TRUE,
+      #     footer = modalButton("OK")
+      #   ))
+      #   
+      #   # Reset file input
+      #   output$example_file_ui <- renderUI({
+      #     fileInput("example_file", "Upload Example RDS File")
+      #   })
+      #   return()
+      # }
+      # 
+      # tryCatch({
+      #   df <- readRDS(input$example_file$datapath)
+      #   
+      #   if (!("data" %in% names(df)) || !is.data.frame(df$data[[1]])) {
+      #     showNotification("Invalid RDS structure: 'data' column with nested data frames is required.", type = "error")
+      #     return()
+      #   }
+      #   
+      #   first_nested <- df$data[[1]]
+      #   nested_colnames(names(first_nested))
+      #   
+      # }, error = function(e) {
+      #   showModal(modalDialog(
+      #     title = "Error reading file",
+      #     paste("The uploaded file could not be read as a valid .rds file:", e$message),
+      #     easyClose = TRUE,
+      #     footer = modalButton("OK")
+      #   ))
+      #   
+      #   # Reset file input
+      #   output$example_file_ui <- renderUI({
+      #     fileInput("example_file", "Upload Example RDS File")
+      #   })
+      # })
     })
     
     get_ollama_models <- function(ip) {

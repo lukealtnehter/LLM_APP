@@ -31,12 +31,12 @@ examples_ui <-
           column(6, actionButton(("next_button"), label = NULL, icon = icon("arrow-right"), style = "width: 100%;"))
         ),
         textOutput(("example_counter")),
-        tags$hr(),
-        textInput(("filename_rds"), "Enter file name (without exteion):", value = ""),
-        downloadButton(("download_rds"), "Download RDS for next step"),
+        # tags$hr(),
+        # textInput(("filename_rds"), "Enter file name (without exteion):", value = ""),
+        # downloadButton(("download_rds"), "Download RDS for next step"),
         tags$hr(),
         textInput(("filename_xlsx"), "Enter file name (without exteion):", value = ""),
-        downloadButton(("download_xlsx"), "Download XLSX for preview")
+        downloadButton(("download_xlsx"), "Download XLSX")
       ),
       
       # Right column
