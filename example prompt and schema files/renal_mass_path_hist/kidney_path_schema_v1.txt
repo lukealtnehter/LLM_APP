@@ -53,6 +53,17 @@
               }
             ]
           },
+	  "size_unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["cm", "mm"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "hist": {
             "anyOf": [
               {
