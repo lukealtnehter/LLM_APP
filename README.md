@@ -33,7 +33,9 @@ This section allows you to creat your own json schema. A display of the
 schema in its native format will be displayed on the right half of the
 screen. This schema allows for the LLMS output to follow precise
 formatting. When a schema is properly used, the output database requires
-no cleaning and facilitate straight forward analysis.
+no cleaning and facilitate straight forward analysis. Every property should have
+some level of formatting. Properties which are plain strings are high discouraged as any number 
+of hallucinations of any legnth can be made. 
 
 #### Name your schema:
 
