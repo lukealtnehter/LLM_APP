@@ -101,7 +101,7 @@ ui <- navbarPage("",
   tabPanel("Create Schema", json_ui),
   tabPanel("Enter Example", examples_ui),
   tabPanel("Engineer Prompt", prompt_ui),
-  tabPanel("Creat Database", random_ui ),
+  tabPanel("Create Database", random_ui ),
   tabPanel("License",license_ui)
 )
 
