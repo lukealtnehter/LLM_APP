@@ -14,7 +14,7 @@ required_packages <- unique(c(
   "ollamar",
   "shiny", "jsonlite", "shinyjs", "jsonvalidate",
   "readxl", "writexl", "tidyverse", "ollamar",
-  "httr2", "arsenal"
+  "httr2", "arsenal", "shinyBS"
 ))
 
 # Function to check and install packages

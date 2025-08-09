@@ -35,7 +35,7 @@ screen. This schema allows for the LLMS output to follow precise
 formatting. When a schema is properly used, the output database requires
 no cleaning and facilitate straight forward analysis. Every property should have
 some level of formatting. Properties which are plain strings are high discouraged as any number 
-of hallucinations of any legnth can be made. 
+of hallucinations of any length can be made. 
 
 #### Name your schema:
 

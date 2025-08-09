@@ -1,61 +1,92 @@
-json_ui <-  fluidPage(
-    titlePanel("JSON Schema Creator"),
-    fluidRow(
-      column(4,
-        textInput(("title"), "Schema Title"),
-        textInput(("description"), "Description"),
-        selectInput(("schema_type"), "Schema Type", choices = c("Object" = "object", "Array" = "array")),
-        #add text
-        p("Choose 'object' if each report gives you one value per feature, even if there are multiple features (e.g., Pulmonary Embolism: Yes, Number of Lesions: 2)."),
-        p("Choose 'array' when you need a separate row for each repeated detail in the report (e.g., size and location for each individual lesion)."),
-        tags$hr(),
-        h4("Add Properties"),
-        textInput(("prop_name"), "Property Name"),
-        selectInput(("prop_type"), "Property Type", choices = c("Select a type..." = "", "string", "number", "integer")),
-        conditionalPanel(
-          condition = sprintf("input['%s'] != ''", ("prop_type")),
-          textAreaInput(("enum_list"), "Enumerations (one per line)", placeholder = "Enter one value per line")
-          ),
-        conditionalPanel(
-          condition = sprintf("input['%s'] == 'string'", ("prop_type")),
-          selectInput(("format_type"), "String Format", choices = c(
-            "None" = "",
-            "date-time (2023-04-01T12:00:00Z)" = "date-time",
-            "date (2023-04-01)" = "date",
-            "time (14:30:00)" = "time",
-            "email (user@example.com)" = "email",
-            "phone number (123-456-7891)" = "phone",
-            "hostname (www.example.com)" = "hostname",
-            "ipv4 (192.168.1.1)" = "ipv4",
-            "ipv6 (2001:0db8::1)" = "ipv6",
-            "uri (https://example.com)" = "uri",
-            "uuid (550e8400-e29b-41d4-a716-446655440000)" = "uuid",
-            "regex (^[A-Z]{3}-\\d{4}$)" = "regex",
-            "byte (U29mdHdhcmU=)" = "byte",
-            "binary (01010101)" = "binary",
-            "password (masked input)" = "password")
-            ),
-          textInput(("string_pat"), "Pattern (regex)")
-          ),
-        conditionalPanel(
-          condition = sprintf("input['%s'] == 'number' || input['%s'] == 'integer'", ("prop_type"), ("prop_type")),
-          textInput(("min_num"), "Minimum"),
-          textInput(("max_num"), "Maximum")),
-        checkboxInput(("ob_req"), "Null not allowed", value = FALSE),
-        fluidRow(
-          column(4,
-            actionButton(("add_prop"), "Add", class = "btn btn-success", width = "100%")),
-          column(4,
-            actionButton(("remove_prop"), "Remove", class = "btn btn-danger", width = "100%")
-            )
-          )
+json_ui <- fluidPage(
+  titlePanel("JSON Schema Creator"),
+  fluidRow(
+    column(4,
+      textInput("title", "Schema Title"),
+      textInput("description", "Description"),
+      selectInput("schema_type", label = list(
+        "Schema Type",
+        bsButton("schema_type_info", label = "",
+          icon = icon("info", lib = "font-awesome"),
+          style = "default", size = "extra-small")),
+        choices = c("Object" = "object", "Array" = "array")
+      ),
+      bsPopover("schema_type_info", "More Information", 
+        "Object schemas extract a single row (object) of information from each unstructured text. Array schemas should be used when numerous rows (objects) could be extracted from a single unstructured text.",
+        "right", trigger = "click",
+        options = list(container = "body")
         ),
-      column(6,
-        h4("Schema Preview"),
-        verbatimTextOutput(("json_preview")),
-        tags$br(),
-        textInput(("filename"), "Enter file name (without extension):", value = ""),
-        downloadButton(("download_json"), "Download JSON")
+      tags$hr(),
+      h4(list(
+        "Add Properties",
+        bsButton("add_properties_info", label = "",
+          icon = icon("info", lib = "font-awesome"),
+          style = "default", size = "extra-small"))
+        ),
+      bsPopover("add_properties_info", "More Information", 
+        "Add the properties of the objects you want to extract. All properties should have some level of formatting. Properties which are plain strings are high discouraged as hallucinations of any length can be made." ,
+        "right", trigger = "click",
+        options = list(container = "body")
+      ),
+      textInput("prop_name", "Property Name"),
+      selectInput("prop_type", "Property Type",
+        choices = c("Select a type..." = "", "string", "number", "integer")),
+      conditionalPanel(
+        condition = "input['prop_type'] != ''",
+        textAreaInput("enum_list", label = list(
+          "Enumerations (one per line)",
+          bsButton("enumerations_info", label = "",
+            icon = icon("info", lib = "font-awesome"),
+            style = "default", size = "extra-small")),
+          placeholder = "Enter one value per line")
+      ),
+      bsPopover("enumerations_info", "More Information", 
+        "Enumerations are a list of possibe choices. *Left* and *Right* would force the LLM to resond only with *Left* or *Right*." ,
+        "right", trigger = "click",
+        options = list(container = "body")
+      ),
+      conditionalPanel(
+        condition = "input['prop_type'] == 'string'",
+        selectInput("format_type", "String Format", choices = c(
+          "None" = "",
+          "date-time (2023-04-01T12:00:00Z)" = "date-time",
+          "date (2023-04-01)" = "date",
+          "time (14:30:00)" = "time",
+          "email (user@example.com)" = "email",
+          "phone number (123-456-7891)" = "phone",
+          "hostname (www.example.com)" = "hostname",
+          "ipv4 (192.168.1.1)" = "ipv4",
+          "ipv6 (2001:0db8::1)" = "ipv6",
+          "uri (https://example.com)" = "uri",
+          "uuid (550e8400-e29b-41d4-a716-446655440000)" = "uuid",
+          "regex (^[A-Z]{3}-\\d{4}$)" = "regex",
+          "byte (U29mdHdhcmU=)" = "byte",
+          "binary (01010101)" = "binary",
+          "password (masked input)" = "password")
+        ),
+        textInput("string_pat", "Pattern (regex)")
+      ),
+      conditionalPanel(
+        condition = "input['prop_type'] == 'number' || input['prop_type'] == 'integer'",
+        textInput("min_num", "Minimum"),
+        textInput("max_num", "Maximum")
+      ),
+      checkboxInput("ob_req", "Null not allowed", value = FALSE),
+      fluidRow(
+        column(4,
+          actionButton("add_prop", "Add", class = "btn btn-success", width = "100%")
+        ),
+        column(4,
+          actionButton("remove_prop", "Remove", class = "btn btn-danger", width = "100%")
+        )
       )
+    ),
+    column(6,
+      h4("Schema Preview"),
+      verbatimTextOutput("json_preview"),
+      tags$br(),
+      textInput("filename", "Enter file name (without extension):", value = ""),
+      downloadButton("download_json", "Download JSON")
     )
   )
+)
