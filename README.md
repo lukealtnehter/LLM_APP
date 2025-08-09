@@ -33,7 +33,9 @@ This section allows you to creat your own json schema. A display of the
 schema in its native format will be displayed on the right half of the
 screen. This schema allows for the LLMS output to follow precise
 formatting. When a schema is properly used, the output database requires
-no cleaning and facilitate straight forward analysis.
+no cleaning and facilitate straight forward analysis. Every property should have
+some level of formatting. Properties which are plain strings are high discouraged as any number 
+of hallucinations of any legnth can be made. 
 
 #### Name your schema:
 
@@ -227,7 +229,8 @@ BIOHPC node. Enter the node address in the format `abc.de.fgh.ij`.
 
 When you have an array schema, and ID column is usually required. This assigns an ID to each row and allows
 for a comparison to a ground truth irregardless of the order of the rows. Object schema do not usually contain 
-an ID columns and are just compared by the `examples` column. 
+an ID columns and are just compared by the `examples` column. The id column is the by-variable used for 
+comparison within each example.
 
 #### BIOHPC Node
 
@@ -261,6 +264,34 @@ predicted accuracy.
   individually engineered to increase its accuracy. Any JSON formatting, enumerations, ranges etc. should be 
   repeated in the property prompt to assist with processing time. Additionally any added context for an 
   individual property should be added.
+  
+#### Analysis
+
+After you submit each prompt you will be able to instantly asses the models performance. This performance is 
+to be analyzed to incrementally tweak the prompt to a high accuracy. An accuracy ~ 95% is generally 
+recommended for most purposes.
+
+  - Average time: The average time per inference will be displayed. As a general rule, the faster your 
+  inference the more straightforward your task and prompt is. This can very widely based on GPU performance. 
+  However, this is just another tool to analyze the methods. Prompts with identical accuracy can be chosen 
+  based on inference time to improve efficiency.
+  
+  - Observations: Essentially how many rows in the output database. For object schema this will be the 
+  number of examples, for arrays this can be any number. The number of hallucinated or omitted objects will 
+  also be displayed. Hallucinated objects are objects not present in the ground truth and omitted objects are 
+  not present in the LLM output. Hallucinations and omissions generally apply for array schema only.
+  
+  - Variable accuracy: For each property the accuracy will be calculated according to the formula: 
+  `Variable accuracy = [(n correct values for a property) / (n observations in LLM output)] * 100`
+  Of note, omitted observations have no effect on the accuracy of an individual property. This is because when
+  the LLM decides not to include an object in an array there is now way to analyze the correctness of the 
+  hypothetical property. Further, the omission of an object is rarely due to the prompt of individual 
+  properties. 
+  
+  - Total Accuracy: For each prompt the total accuracy will be calculated according to the formula:
+  `Total Accuracy = 100 - [(n incorrect values in the database) + (n omitted objects)(n properties)]/[n total data points in the ground truth]`
+  The total accuracy of a prompt includes omissions.
+  
 
 # Random sampling
 
