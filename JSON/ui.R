@@ -12,7 +12,10 @@ json_ui <- fluidPage(
         choices = c("Object" = "object", "Array" = "array")
       ),
       bsPopover("schema_type_info", "More Information", 
-        "Object schemas extract a single row (object) of information from each unstructured text. Array schemas should be used when numerous rows (objects) could be extracted from a single unstructured text.",
+        content = HTML(paste("<b>Object</b> schemas extract a single row (object) of information from each",
+        "unstructured text. <b>Array</b> schemas should be used when numerous rows (objects) could be extracted",
+        "from a single unstructured text."
+          )),
         "right", trigger = "click",
         options = list(container = "body")
         ),
@@ -24,7 +27,9 @@ json_ui <- fluidPage(
           style = "default", size = "extra-small"))
         ),
       bsPopover("add_properties_info", "More Information", 
-        "Add the properties of the objects you want to extract. All properties should have some level of formatting. Properties which are plain strings are high discouraged as hallucinations of any length can be made." ,
+        content = HTML(paste("Add the properties of the objects you want to extract. All properties should",
+        "have some level of formatting. Properties which are plain strings are high discouraged as",
+        "hallucinations of any length can be made.")),
         "right", trigger = "click",
         options = list(container = "body")
       ),
@@ -40,8 +45,9 @@ json_ui <- fluidPage(
             style = "default", size = "extra-small")),
           placeholder = "Enter one value per line")
       ),
-      bsPopover("enumerations_info", "More Information", 
-        "Enumerations are a list of possibe choices. *Left* and *Right* would force the LLM to resond only with *Left* or *Right*." ,
+      bsPopover("enumerations_info", "More Information", content = HTML(paste(
+        "Enumerations are a list of possibe choices. <b>Left</b> and <b>Right</b> would force the LLM to",
+        "resond only with <b>Left</b> or <b>Right</b>.")),
         "right", trigger = "click",
         options = list(container = "body")
       ),
