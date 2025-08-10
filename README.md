@@ -123,9 +123,11 @@ text, array extract numerous rows.
             (`01010101`), password (`masked input`)
 
         -   pattern: regex formats that aren’t supported by native json
-            can be defined here `(ap) 12 x (ll) 4.5 x (cc) NA` could be
+            can be defined here. Of note, certain shorthands are not supported in r. All formats should start 
+            with `^` and end with `$`. All `\` should be escaped as `\\`.
+            `9.4 (ap) x 4.5 (ll)`, `9.4 (ap) x 4.5 (ll) x 5.2 (cc)`, or `9.4 x 5.4` could all be
             a valid output of:
-            `^(ap)\s(\d+(\.\d)?|NA)\sx\s(ll)\s(\d+(\.\d)?|NA)\sx\s(cc)\s(\d+(\.\d)?|NA)$`.
+            `^([0-9]+\\.[0-9]+( \\((ap|ll|cc)\\))?( ?x ?)?){1,3}$`.
             This is also a great way to make arrays of strings such as:
             `^(upper|mid|lower)? ?(medial|lateral)? ?(anterior|posterior|midline)?$`
             allowing a string of 1-3 location descriptors always in the

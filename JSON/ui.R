@@ -53,7 +53,11 @@ json_ui <- fluidPage(
       ),
       conditionalPanel(
         condition = "input['prop_type'] == 'string'",
-        selectInput("format_type", "String Format", choices = c(
+        selectInput("format_type", label = list("String Format",
+          bsButton("format_info", label = "",
+            icon = icon("info", lib = "font-awesome"),
+            style = "default", size = "extra-small")),
+          choices = c(
           "None" = "",
           "date-time (2023-04-01T12:00:00Z)" = "date-time",
           "date (2023-04-01)" = "date",
@@ -70,8 +74,27 @@ json_ui <- fluidPage(
           "binary (01010101)" = "binary",
           "password (masked input)" = "password")
         ),
-        textInput("string_pat", "Pattern (regex)")
+        bsPopover("format_info", "More Information", content = HTML(paste(
+          "If applicable, choose a natively supported string format in JSON.",
+          "All LLM responses for this property will conform to the format.")),
+          "right", trigger = "click",
+          options = list(container = "body")
+        ),
+        textInput("string_pat", label = list("Pattern (regex)",
+          bsButton("pattern_info", label = "",
+            icon = icon("info", lib = "font-awesome"),
+            style = "default", size = "extra-small")
+          )
       ),
+        bsPopover("pattern_info", "More Information", content = HTML(paste(
+          "If applicable, create your own custom string formatting using regular expressions.",
+          "Start your regular expression with ^ and end with $.",
+          "To allow <b>upper</b>, <b>posterior</b>, <b>upper lateral</b> <b>mid lateral posterior</b>",
+          "but never <i>lateral upper</i>, input ^(upper|mid|lower)? ?(medial|lateral)? ?(anterior|posterior|midline)?$",
+          "All LLM responses for this property will conform to the format.")),
+          "right", trigger = "click",
+          options = list(container = "body")
+        )),
       conditionalPanel(
         condition = "input['prop_type'] == 'number' || input['prop_type'] == 'integer'",
         textInput("min_num", "Minimum"),
