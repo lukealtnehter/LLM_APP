@@ -102,17 +102,17 @@ Homogenecity one of:
 
 - null if not mentioned
 
-high_b_value_dwi: High b-value DWI (diffusion weighted imaging) + ADC (apparent diffusion coeffecient) of the lesion
-
-DWI one of:
+high_b_value_dwi: High b-value DWI (diffusion weighted imaging):
 - Hyperintensity
 - Isointense
 - Hypointense
-ADC one of: 
+- null if not mentioned
+
+ADC (apparent diffusion coeffecient) of the lesion:
 - Hyperintensity
 - Isointense
 - Hypointense
-
+- null if not mentioned
 
 delayed_enhancement: does the lesion have delayed enhancement. One of:
 - plateau (+/-10%)

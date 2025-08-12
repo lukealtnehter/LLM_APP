@@ -127,11 +127,22 @@
               }
             ]
           },
-          "t2_signal_relative_to_renal_cortex": {
+          "t2_signal_relative_to_renal_cortex_enhancement": {
             "anyOf": [
               {
                 "type": "string",
-                "pattern": "^(Hyperintense|Isointense|Hypointense); (Homogeneous|Slightly heterogeneous|Heterogeneous)$"
+                "enum": ["Hyperintense", "Isointense", "Hypointense"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "t2_signal_relative_to_renal_cortex_homogenecity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["Homogeneous", "Slightly heterogeneous", "Heterogeneous"]
               },
               {
                 "type": "null"
@@ -164,18 +175,40 @@
             "anyOf": [
               {
                 "type": "string",
-                "pattern": "^(Hyperintensity|Isointense|Hypointense); ADC: (Hyperintensity|Isointense|Hypointense)$"
+                "enum": ["Hyperintensity","Isointense","Hypointense"]
               },
               {
                 "type": "null"
               }
             ]
           },
-          "corticomedullary_enhancement_relative_to_renal_cortex": {
+          "adc":  {
             "anyOf": [
               {
                 "type": "string",
-                "pattern": "^(Intense|Moderate|Mild|NA); (Homogeneous|Slightly heterogeneous|Heterogeneous|NA)$"
+                "enum": ["Hyperintensity","Isointense","Hypointense"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "corticomedullary_enhancement_relative_to_renal_cortex_enhancement": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["Intense","Moderate","Mild","NA"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "corticomedullary_enhancement_relative_to_renal_cortex_homogeneity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["Homogeneous","Slightly heterogeneous","Heterogeneous"]
               },
               {
                 "type": "null"
@@ -271,7 +304,7 @@
             ]
           }
         },
-        "required": ["lesion_id", "ccls", "size_unit", "side", "location", "prior_size", "prior_date", "truesize", "mri_staging", "percent_endophytic", "depth_extension", "t2_signal_relative_to_renal_cortex", "t1_chemical_shift", "segmental_inversion_enhancement", "high_b_value_dwi", "corticomedullary_enhancement_relative_to_renal_cortex", "delayed_enhancement", "fat_poor_aml_suspected", "tumor_margin", "tumor_invasion", "renal_vein_anatomy", "renal_vein_thrombus", "renal_artery_anatomy", "renal_artery_stenosis"]
+        "required": ["lesion_id", "ccls", "size_unit", "side", "location", "prior_size", "prior_date", "truesize", "mri_staging", "percent_endophytic", "depth_extension", "t2_signal_relative_to_renal_cortex_enhancement","t2_signal_relative_to_renal_cortex_homogeneity", "t1_chemical_shift", "segmental_inversion_enhancement", "high_b_value_dwi","adc", "corticomedullary_enhancement_relative_to_renal_cortex_enhancement", "corticomedullary_enhancement_relative_to_renal_cortex_homogeneity","delayed_enhancement", "fat_poor_aml_suspected", "tumor_margin", "tumor_invasion", "renal_vein_anatomy", "renal_vein_thrombus", "renal_artery_anatomy", "renal_artery_stenosis"]
       }
     }
   },
