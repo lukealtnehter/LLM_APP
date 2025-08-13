@@ -19,6 +19,7 @@ json_server <- function(input, output, session) {
     observeEvent(input$add_prop, {
       
       req(input$prop_name) #retrieve the name
+      req(input$prop_type) #retrieve the type
       prop_def <- list(type = input$prop_type) # store the data type
       
       
@@ -61,6 +62,11 @@ json_server <- function(input, output, session) {
       schema$properties[[input$prop_name]] <- prop_def
       prop_order(c(prop_order(), input$prop_name))
       
+      # get only unique values for prop_order()
+      prop_order(unique(prop_order()))
+      
+      
+      
       #update UI
       updateTextInput(session, "prop_name", value = "")
       updateSelectInput(session, "prop_type", selected = "")
@@ -75,10 +81,14 @@ json_server <- function(input, output, session) {
     #remove the last property from the order
     observeEvent(input$remove_prop, {
       current_order <- prop_order()
-      if (length(current_order) > 0) {
+      if (length(current_order) > 0 && is.na(input$prop_name)) {
         last_prop <- tail(current_order, 1)
         schema$properties[[last_prop]] <- NULL
         prop_order(head(current_order, -1))
+      }
+      if (length(current_order) > 0 && !is.na(input$prop_name)) {
+        schema$properties[[input$prop_name]] <- NULL
+        prop_order(current_order[current_order != input$prop_name])
       }
     })
     
@@ -127,4 +137,8 @@ json_server <- function(input, output, session) {
         write(toJSON(render_schema(), pretty = TRUE, auto_unbox = TRUE), file)
       }
     )
+    
+    observeEvent(input$submit, {
+      write(toJSON(render_schema(), pretty = TRUE, auto_unbox = TRUE), "TEMP/current_schema.json")
+    })
 }

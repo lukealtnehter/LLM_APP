@@ -21,7 +21,7 @@ invisible(lapply(required_packages, function(pkg) {
 
 #HOMEPAGE app
 source("HOMEPAGE/ui.R")
-source("HOMEPAGE/server.R")
+source("HOMEPAGE/server.R") 
 
 # JSON app
 source("JSON/ui.R")      

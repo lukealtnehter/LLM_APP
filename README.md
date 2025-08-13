@@ -6,8 +6,8 @@ creation, selection of a representative sample with ground truth, prompt
 engineering, validation on a random sample, and finally the creation of
 the database.
 
-<figure>
-<img src="README/figure_1.jpg" alt="Figure 1: LLM Pipeline Schematic" />
+<figure style="text-align: center;">
+<img src="README/figure_1.jpg" alt="Figure 1: LLM Pipeline Schematic" style="width: 700px; height: auto;" />
 <figcaption aria-hidden="true">Figure 1: LLM Pipeline
 Schematic</figcaption>
 </figure>

@@ -228,7 +228,7 @@ json_ui <- fluidPage(
   tags$input(id = "schema_type", type = "hidden", value = "object"),
   
   fluidRow(column(
-    4,
+    5,
     div(
       class = "panel",
       div(
@@ -416,7 +416,7 @@ json_ui <- fluidPage(
       6,
       actionButton(
         "add_prop",
-        "Add Property",
+        "Add",
         class = "btn btn-success",
         width = "100%",
         icon = icon("plus")
@@ -425,14 +425,14 @@ json_ui <- fluidPage(
       6,
       actionButton(
         "remove_prop",
-        "Remove Last",
+        "Remove",
         class = "btn btn-danger",
         width = "100%",
         icon = icon("minus")
       )
     ))
   ), column(
-    8, div(
+    7, div(
       class = "panel",
       div(class = "section-header", "Schema Preview"),
       verbatimTextOutput("json_preview"),
@@ -455,7 +455,14 @@ json_ui <- fluidPage(
             class = "btn btn-primary",
             width = "100%",
             icon = icon("download")
-          )
+          ),
+          actionButton(
+            "submit",
+            "Submit & Next",
+            class = "btn btn-danger",
+            width = "100%",
+            icon = icon("redo"),
+            style = "margin-top: 10px;")
         )
       ))
     )
