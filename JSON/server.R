@@ -4,15 +4,15 @@ json_server <- function(input, output, session) {
     
     #general schema framework
     schema <- reactiveValues(
-      title = NULL,
-      description = NULL,
+      # title = NULL,
+      # description = NULL,
       properties = list()
     )
     
     #schema title and description inputs
     observe({
-      schema$title <- input$title
-      schema$description <- input$description
+      schema$title <- "add any title"
+      schema$description <- "add any description"
     })
     
     # adding a property
@@ -24,7 +24,7 @@ json_server <- function(input, output, session) {
       
       # if data type string store the enumerations in parenthesis. If number/
       # integer store without parenthesis as a number
-      if (input$prop_type != "" && nzchar(input$enum_list)) {
+      if (input$prop_type =="string" && input$string_constraint_type == "enum" && nzchar(input$enum_list)) {
         enum_vals <- strsplit(input$enum_list, "\n")[[1]]
         if (input$prop_type %in% c("number", "integer")) {
           enum_vals <- as.numeric(enum_vals)
@@ -34,16 +34,16 @@ json_server <- function(input, output, session) {
       
       #attch string formats and regex patterns
       if (input$prop_type == "string") {
-        if (!is.null(input$format_type) && input$format_type != "") {
+        if (!is.null(input$format_type) && input$string_constraint_type == "format") {
           prop_def$format <- input$format_type
         }
-        if (nzchar(input$string_pat)) {
+        if (input$string_constraint_type == "pattern" && nzchar(input$string_pat)) {
           prop_def$pattern <- input$string_pat
         }
       }
       
       #attach min and max
-      if (input$prop_type %in% c("number", "integer")) {
+      if (input$prop_type %in% c("number", "integer") && input$string_constraint_type == "minmax") {
         if (nzchar(input$min_num)) prop_def$minimum <- as.numeric(input$min_num)
         if (nzchar(input$max_num)) prop_def$maximum <- as.numeric(input$max_num)
       }
@@ -98,8 +98,8 @@ json_server <- function(input, output, session) {
       }
       
       list(
-        title = schema$title,
-        description = schema$description,
+        # title = schema$title,
+        # description = schema$description,
         type = "object",
         properties = list(
           data = if (input$schema_type == "object") {
