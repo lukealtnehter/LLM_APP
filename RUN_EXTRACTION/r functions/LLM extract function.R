@@ -4,11 +4,6 @@ library(jsonlite)
 library(httr2)
 
 
-
-
-
-
-
 llm_extract <- function(
     mydata,
     prompt_path,
@@ -17,8 +12,7 @@ llm_extract <- function(
     llm_model = "phi4",
     input_text_column = "final_diag",
     seed_num = 7,
-    context_window = 4000,
-    for_webapp=F
+    context_window = 4000
 ) {
   prompt_txt <- readLines(prompt_path, warn = FALSE) %>% paste(collapse = "\n")
   schema_r <- readLines(format_path, warn = FALSE, encoding = 'UTF-8') %>%
@@ -28,22 +22,11 @@ llm_extract <- function(
   messages_list <- list(content = prompt_txt, role = "system")
   output_column <- llm_model
   
-  if(!for_webapp) {
-    pb <- txtProgressBar(min = 0, max = nrow(mydata), style = 3)
-  }
-  
   # Loop through rows and call LLM
   for (i in 1:nrow(mydata)) {
-    
-    if (for_webapp) {
-      progress$inc(1 / n, detail = paste("Step", i, "of", n))
-    } else {
-      setTxtProgressBar(pb, i)
-    }
-    
+    cat("Processing", i, "/", nrow(mydata), "\n")
     
     start_time <- Sys.time()
-    
     temp <- tryCatch({
       chat(
         host = llm_ip_address,
@@ -75,8 +58,6 @@ llm_extract <- function(
     }
   }
   
-  if(!for_webapp) close(pb)
-  
   # Process and filter the LLM output
   llm_sym <- sym(llm_model)
   mydata1 <- mydata %>%
@@ -91,6 +72,7 @@ llm_extract <- function(
   
   return(mydata1)
 }
+
 # 
 # download_github_file <- function(file_name, local_path = "prompt.txt", token = git_hub_token) {
 #   # Construct GitHub API URL

@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "rrrrrr": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": "rrrrrr"
+    }
+  },
+  "required": [
+    "data"
+  ]
+}

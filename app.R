@@ -1,7 +1,7 @@
 required_packages <- c(
   "shiny", "jsonlite", "shinyjs", "jsonvalidate",
   "readxl", "writexl", "tidyverse", "ollamar",
-  "httr2", "arsenal", "shinyBS"
+  "httr2", "arsenal", "shinyBS","shinyWidgets", "shinycssloaders","shinythemes"
 )
 
 # Function to install missing packages
