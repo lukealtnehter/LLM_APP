@@ -295,11 +295,15 @@ recommended for most purposes.
   The total accuracy of a prompt includes omissions.
   
 
-# Random sampling
+# Random sampling/ Validation/ Running the whole batch
 
-Step 5.
+As the prompt was progressively engineered on a small sample, it's possible the prompt over fits to the sample and does
+not represent the true accuracy of the prompt for the given task. Thus the prompt needs to be validated on a 
+random sample. Any changes to the prompt need to be re validated with an new random sample. 
 
-# Validation
+#### Upload Schema, Prompt, and Batch
+
+
 
 Step 6.
 
