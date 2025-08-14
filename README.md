@@ -303,6 +303,7 @@ random sample. Any changes to the prompt need to be re validated with an new ran
 
 #### Upload Schema, Prompt, and Batch
 
+### Sample Size
 
 
 Step 6.
