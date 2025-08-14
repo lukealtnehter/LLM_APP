@@ -39,6 +39,10 @@ source("PROMPT_ENGINEERING/server.R")
 source("RANDOM_SAMPLE/ui.R")
 source("RANDOM_SAMPLE/server.R")
 
+# RUN EXTRACTION app
+source("RUN_EXTRACTION/ui.R")
+source("RUN_EXTRACTION/server.R")
+
 # LICENSE page
 source("LICENSE/ui.R")
 source("LICENSE/server.R")
@@ -102,6 +106,7 @@ ui <- navbarPage("",
   tabPanel("Enter Example", examples_ui),
   tabPanel("Engineer Prompt", prompt_ui),
   tabPanel("Create Database", random_ui ),
+  tabPanel("Run Extraction", run_ui),
   tabPanel("License",license_ui)
 )
 
@@ -111,6 +116,7 @@ server <- function(input, output, session) {
   examples_server(input, output, session)
   prompt_server(input, output, session)
   random_server(input, output, session)
+  run_server(input, output, session)
   license_server(input, output, session)
 }
 

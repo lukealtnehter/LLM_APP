@@ -73,23 +73,23 @@ llm_extract <- function(
   return(mydata1)
 }
 
-
-download_github_file <- function(file_name, local_path = "prompt.txt", token = git_hub_token) {
-  # Construct GitHub API URL
-  api_url <- paste0("https://api.github.com/repos/lukealtnether/LLM_APP/contents/", utils::URLencode(file_name, reserved = TRUE))
-  
-  # Get download URL from GitHub API
-  download_url <- request(api_url) %>%
-    req_auth_bearer_token(token) %>%
-    req_perform() %>%
-    resp_body_json() %>%
-    (\(x) x$download_url)()
-  
-  # Download the file using the download URL
-  request(download_url) %>%
-    req_perform(path = local_path)
-}
-
+# 
+# download_github_file <- function(file_name, local_path = "prompt.txt", token = git_hub_token) {
+#   # Construct GitHub API URL
+#   api_url <- paste0("https://api.github.com/repos/lukealtnether/LLM_APP/contents/", utils::URLencode(file_name, reserved = TRUE))
+#   
+#   # Get download URL from GitHub API
+#   download_url <- request(api_url) %>%
+#     req_auth_bearer_token(token) %>%
+#     req_perform() %>%
+#     resp_body_json() %>%
+#     (\(x) x$download_url)()
+#   
+#   # Download the file using the download URL
+#   request(download_url) %>%
+#     req_perform(path = local_path)
+# }
+# 
 
 
 

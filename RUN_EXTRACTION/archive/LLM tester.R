@@ -21,16 +21,6 @@ options(shiny.maxRequestSize = 60*1024^2)
 # User defined functions used in this app ----
 `%!in%` = Negate(`%in%`)
 
-read_excel_allsheets <- function(filename, tibble = FALSE) {
-  sheets <- readxl::excel_sheets(filename)
-  x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X))
-  if(!tibble) x <- lapply(x, as.data.frame)
-  names(x) <- sheets
-  x
-}
-
-source("https://git.biohpc.swmed.edu/yxi/run-ollama-on-biohpc/-/raw/main/Example%201%20Extract%20info%20from%20text/LLM%20functions.r")
-
 
 ################################################################
 
