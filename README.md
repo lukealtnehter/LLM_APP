@@ -299,7 +299,7 @@ recommended for most purposes.
 Once the predicted accuracy on the representative sample is sufficiently high (~95%), the prompt can be downloaded 
 as a .txt file for future use. 
 
-# Random sampling/ Validation/ Running the whole batch
+# Random sampling/ Running the whole batch
 
 As the prompt was progressively engineered on a small sample, it's possible the prompt over fits to the sample and does
 not represent the true accuracy of the prompt for the given task. Thus the prompt needs to be validated on a 
