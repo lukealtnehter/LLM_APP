@@ -1,13 +1,38 @@
 {
+  "title": "Per report - fibroid count",
+  "description": "this schema count number of fibroids described in the report and describe cancer status",
   "type": "object",
   "properties": {
     "data": {
       "type": "object",
       "properties": {
-        "rrrrrr": {
+        "number of fibroid": {
           "anyOf": [
             {
-              "type": "number"
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metastatic status": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["metastatic", "non-metastatic"]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "leiomyosarcoma status": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["suspected", "not suspected"]
             },
             {
               "type": "null"
@@ -15,7 +40,7 @@
           ]
         }
       },
-      "required": "rrrrrr"
+      "required": ["number of fibroid", "metastatic status", "leiomyosarcoma status"]
     }
   },
   "required": [

@@ -11,19 +11,18 @@ library(httr2)
 
 llm_extract <- function(
     mydata,
-    prompt_path,
-    format_path,
+    prompt_txt,
+    schema_json,
     llm_ip_address = "http://172.18.227.92:11434",
     llm_model = "phi4",
     input_text_column = "final_diag",
     seed_num = 7,
     context_window = 4000,
-    for_webapp=F
-) {
-  prompt_txt <- readLines(prompt_path, warn = FALSE) %>% paste(collapse = "\n")
-  schema_r <- readLines(format_path, warn = FALSE, encoding = 'UTF-8') %>%
-    paste(collapse = "\n") %>%
-    fromJSON(simplifyVector = FALSE)
+    for_webapp=F) {
+  # prompt_txt <- readLines(prompt_path, warn = FALSE) %>% paste(collapse = "\n")
+  # schema_json <- readLines(format_path, warn = FALSE, encoding = 'UTF-8') %>%
+  #   paste(collapse = "\n") %>%
+  #   fromJSON(simplifyVector = FALSE)
   
   messages_list <- list(content = prompt_txt, role = "system")
   output_column <- llm_model
@@ -52,7 +51,7 @@ llm_extract <- function(
           messages_list,
           list(content = mydata[[input_text_column]][i], role = "user")
         ),
-        format = schema_r,
+        format = schema_json,
         output = "text",
         temperature = 0,
         seed = seed_num,
@@ -109,5 +108,40 @@ llm_extract <- function(
 # }
 # 
 
+# Helper function to read Excel sheets
+read_excel_allsheets <- function(filename, tibble = FALSE) {
+  sheets <- readxl::excel_sheets(filename)
+  x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X))
+  if(!tibble) x <- lapply(x, as.data.frame)
+  names(x) <- sheets
+  x
+}
 
-
+clean_json_response <- function(response) {
+  if(is.null(response) || length(response) == 0) return(NULL)
+  
+  # Remove markdown code blocks - leading and trailing ```
+  cleaned <- gsub("^```json\\s*", "", response, perl = TRUE)
+  cleaned <- gsub("^```\\s*", "", cleaned, perl = TRUE)
+  cleaned <- gsub("\\s*```\\s*$", "", cleaned, perl = TRUE)
+  
+  # Remove any leading/trailing whitespace
+  cleaned <- trimws(cleaned)
+  
+  # Remove trailing garbage after JSON - find the last } or ] and cut there
+  if(grepl("\\}", cleaned)) {
+    # Find the last closing brace
+    last_brace <- max(gregexpr("\\}", cleaned)[[1]])
+    if(last_brace > 0) {
+      cleaned <- substr(cleaned, 1, last_brace)
+    }
+  } else if(grepl("\\]", cleaned)) {
+    # Find the last closing bracket for arrays
+    last_bracket <- max(gregexpr("\\]", cleaned)[[1]])
+    if(last_bracket > 0) {
+      cleaned <- substr(cleaned, 1, last_bracket)
+    }
+  }
+  
+  return(trimws(cleaned))
+}

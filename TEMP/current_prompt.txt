@@ -1,0 +1,7 @@
+General Information: You are charged with extracting the number of uterine fibroids described in radiology reports. Focus only on findings in the uterus and ignore all findings in other organs. Extract the fields below when present in the report. Count the number of uterine fibroids described in the report. uterine fibroids can also be labelled as leiomyomas, leiomyomata, or myomas. If no uterine fibroid is present in the report return "0". Return as JSON.
+ 
+count: Return the number of uterine fibroid.
+
+metastatic status: if the metastatic stage is not mentioned explicitly, return "null".
+
+leiomyosarcoma status: if leiomyosarcoma is suspected or cannot be rulled out, return "suspected". If leiomyosarcoma is not suspected, return "not suspected". If leiomyosarcoma is not mentioned, return "null".

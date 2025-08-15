@@ -9,7 +9,8 @@ library(shinythemes)
 library(htmltools)
 library(jsonlite)
 library(shinyWidgets)
-
+library(ollamar)
+library(httr2)
 
 # Load user interface ----
 run_ui <- fluidPage(
@@ -91,15 +92,15 @@ run_ui <- fluidPage(
                 accept = c(".json")),
       
       tags$hr(),
-      ui <- fluidPage(
-        actionBttn(
-          inputId = "runllm",
-          label = "Run LLM",
-          style = "gradient",   # "simple", "fill", "bordered", etc.
-          color = "royal",      # "primary", "warning", "danger", "success", or "custom"
-          size = "lg"
-        )
-      )    
+      
+      # Fixed the nested fluidPage issue
+      actionBttn(
+        inputId = "runllm",
+        label = "Run LLM",
+        style = "gradient",
+        color = "royal",
+        size = "lg"
+      )
     ),
     
     mainPanel(
@@ -107,7 +108,6 @@ run_ui <- fluidPage(
       
       # Error messages
       textOutput("filerror"),
-      
       
       # Main content using tabs
       tabsetPanel(
@@ -123,14 +123,14 @@ run_ui <- fluidPage(
         tabPanel(
           title = "Prompt Preview",
           value = "prompt_tab",
-          textAreaInput("prompt_display", NULL, value = "",autoresize=T),
+          textAreaInput("prompt_display", NULL, value = "", height = "400px"),
           tags$script(HTML("$('#prompt_display').attr('readonly', true);"))
         ),
         
         tabPanel(
           title = "Schema Preview", 
           value = "schema_tab",
-          textAreaInput("schema_display", NULL, value = "",autoresize=T),
+          textAreaInput("schema_display", NULL, value = "", height = "400px"),
           tags$script(HTML("$('#schema_display').attr('readonly', true);"))
         )
       )

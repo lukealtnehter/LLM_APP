@@ -9,48 +9,32 @@ library(shinythemes)
 library(htmltools)
 library(jsonlite)
 library(shinyWidgets)
+library(ollamar)
 
 options(shiny.maxRequestSize = 60*1024^2)
 
 # User defined functions used in this app ----
-`%!in%` = Negate(`%in%`)
+`%!in%` <- Negate(`%in%`)
 
-# Source the LLM extract function
-source("r functions/LLM extract function.R")
-
-# Helper function to read Excel sheets
-read_excel_allsheets <- function(filename, tibble = FALSE) {
-  sheets <- readxl::excel_sheets(filename)
-  x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X))
-  if(!tibble) x <- lapply(x, as.data.frame)
-  names(x) <- sheets
-  x
+# Source the LLM extract function (if it exists)
+if(file.exists("r functions/LLM extract function.R")) {
+  source("r functions/LLM extract function.R")
 }
 
-# Helper function to get available models
-get_models <- function(url) {
-  tryCatch({
-    response <- httr::GET(url)
-    if(httr::status_code(response) == 200) {
-      content <- httr::content(response, as = "parsed")
-      model_names <- sapply(content$models, function(x) x$name)
-      return(model_names)
-    } else {
-      return("Connection failed")
-    }
-  }, error = function(e) {
-    return("Connection failed")
-  })
+# Helper function to read all Excel sheets
+read_excel_allsheets <- function(filename) {
+  sheets <- excel_sheets(filename)
+  result <- lapply(sheets, function(x) read_excel(filename, sheet = x))
+  names(result) <- sheets
+  return(result)
 }
 
-
-run_server <- function(session, input, output) {
+run_server <- function(input, output, session) {
   
   # Reactive values
   values <- reactiveValues(
     prompt_content = NULL,
-    schema_content = NULL,
-    current_progress = 0
+    schema_content = NULL
   )
   
   # Auto-load prompt and schema files from TEMP/ directory
@@ -83,6 +67,7 @@ run_server <- function(session, input, output) {
     req(input$prompt_file)
     values$prompt_content <- readLines(input$prompt_file$datapath, warn = FALSE) %>%
       paste(collapse = "\n")
+    writeLines(values$prompt_content, "TEMP/current_prompt.txt")
     showNotification("Prompt file uploaded successfully", type = "message", duration = 3)
   })
   
@@ -91,6 +76,8 @@ run_server <- function(session, input, output) {
     req(input$schema_file)
     values$schema_content <- readLines(input$schema_file$datapath, warn = FALSE, encoding = 'UTF-8') %>%
       paste(collapse = "\n")
+    #save file to TEMP directory
+    file.copy(input$schema_file$datapath, "TEMP/current_schema.json", overwrite = TRUE)
     showNotification("Schema file uploaded successfully", type = "message", duration = 3)
   })
   
@@ -126,12 +113,17 @@ run_server <- function(session, input, output) {
   
   # Update model selection when IP changes
   observeEvent(input$api, {
-    if(nchar(input$api) > 0) {
-      models <- get_models(paste0("http://", input$api, ":11434/api/tags"))
-      updateSelectInput(session, "model_name", choices = models)
+    if(nchar(input$api) >= 10) { # More flexible IP validation
+      tryCatch({
+        models <- list_models(host = paste0("http://", input$api, ":11434"))$name
+        updateSelectInput(session, "model_name", choices = models)
+      }, error = function(e) {
+        showNotification("Could not connect to Ollama server", type = "warning")
+      })
     }
   })
   
+  # Update prompt display
   observe({
     if(!is.null(values$prompt_content) && nchar(values$prompt_content) > 0) {
       updateTextAreaInput(session, "prompt_display", value = values$prompt_content)
@@ -141,6 +133,7 @@ run_server <- function(session, input, output) {
     }
   })
   
+  # Update schema display
   observe({
     if(!is.null(values$schema_content) && nchar(values$schema_content) > 0) {
       updateTextAreaInput(session, "schema_display", value = values$schema_content)
@@ -153,7 +146,7 @@ run_server <- function(session, input, output) {
   # Process data with LLM
   filtereddata2 <- eventReactive(input$runllm, {
     
-    req(data2(), input$varb, values$prompt_content, values$schema_content, input$model_name)
+    req(data2(), input$varb, input$model_name)
     
     # Validate inputs
     if(is.null(input$varb) || length(input$varb) == 0 || "None" %in% input$varb) {
@@ -166,41 +159,98 @@ run_server <- function(session, input, output) {
       return(data2())
     }
     
+    mydata <- data2()
+    n <- nrow(mydata)
+    
     withProgress(message = "Processing...", value = 0, {
-      progress <- shiny::Progress$new()
-      on.exit(progress$close())
-      progress$set(message = "Processing...", value = 0)
       
+      # LLM parameters
+      prompt_txt <- readLines("TEMP/current_prompt.txt", warn = FALSE) %>% paste(collapse = "\n")
+      schema_r <- readLines("TEMP/current_schema.json", warn = FALSE, encoding = 'UTF-8') %>%
+        paste(collapse = "\n") %>%
+        fromJSON(simplifyVector = FALSE)
+      llm_ip_address <- paste0("http://", input$api, ":11434")
+      llm_model <- input$model_name
+      input_text_column <- input$varb
+      seed_num <- input$seed
+      context_window <- 4000
       
-      result <- llm_extract(
-        mydata = input_data,
-        prompt_path = input$prompt_file$datapath %||% "TEMP/current_prompt.txt",
-        format_path = input$schema_file$datapath %||% "TEMP/current_schema.json",
-        llm_ip_address = paste0("http://", input$api, ":11434"),
-        llm_model = input$model_name,
-        input_text_column = input_col,
-        seed_num = input$seed,
-        context_window = 4000
-      )
+      messages_list <- list(content = prompt_txt, role = "system")
+      output_column <- llm_model
+      
+      # Loop through rows and call LLM
+      for (i in 1:n) {
+        
+        incProgress(1/n, detail = paste("Processing row", i, "of", n))
+        
+        start_time <- Sys.time()
+        
+        temp <- tryCatch({
+          chat(
+            host = llm_ip_address,
+            model = llm_model,
+            messages = create_messages(
+              messages_list,
+              list(content = as.character(mydata[[input_text_column]][i]), role = "user")
+            ),
+            format = schema_r,
+            output = "text",
+            temperature = 0,
+            seed = seed_num,
+            num_ctx = context_window
+          )
+        }, error = function(e) {
+          message("Error during LLM call on row ", i, ": ", conditionMessage(e))
+          return(NULL)
+        })
+        
+        end_time <- Sys.time()
+        duration_sec <- as.numeric(difftime(end_time, start_time, units = "secs"))
+        
+        if (length(temp) > 0 && !is.null(temp)) {
+          #temp <- clean_json_response(temp)
+          parsed <- jsonlite::fromJSON(temp)
+          mydata[[output_column]][i] <- list(parsed$data %>%
+                                               modify_if(is.null, ~NA) %>%
+                                               as.data.frame(stringsAsFactors = FALSE))
+          mydata[[paste0(llm_model, "_time")]][i] <- duration_sec
+        }
+      }
+      
+      # Process and filter the LLM output
+      llm_sym <- sym(llm_model)
+      mydata1 <- mydata %>%
+        filter(map_chr(!!llm_sym, class) == 'data.frame') %>%
+        unique() %>%
+        unnest(!!llm_sym, keep_empty = TRUE) %>%
+        bind_rows(
+          mydata %>%
+            filter(map_chr(!!llm_sym, class) != 'data.frame') %>%
+            select(-all_of(llm_model))
+        )
+      
     })
-    return(result)
+    
+    return(mydata1)
   })
   
   # Render data table with improved visualization
   output$mytable2 <- DT::renderDataTable({
     
-    req(data2())
+    print_data <- if(input$runllm > 0) {
+      filtereddata2()
+    } else {
+      data2()
+    }
     
-    data <- if(input$runllm > 0) filtereddata2() else data2()
-    
-    if(is.null(data)) return(NULL)
+    if(is.null(print_data)) return(NULL)
     
     # Create column definitions for long text handling
     col_defs <- list()
-    for(i in 1:ncol(data)) {
-      if(is.character(data[[i]]) || is.factor(data[[i]])) {
+    for(i in 1:ncol(print_data)) {
+      if(is.character(print_data[[i]]) || is.factor(print_data[[i]])) {
         # Check if column contains long text
-        max_length <- max(nchar(as.character(data[[i]])), na.rm = TRUE)
+        max_length <- max(nchar(as.character(print_data[[i]])), na.rm = TRUE)
         if(max_length > 50) {
           col_defs <- append(col_defs, list(list(
             targets = i - 1,  # DT uses 0-based indexing
@@ -217,7 +267,7 @@ run_server <- function(session, input, output) {
     }
     
     DT::datatable(
-      data,
+      print_data,
       extensions = c('Buttons', 'Responsive'),
       options = list(
         dom = 'Bfrtip',
@@ -237,7 +287,7 @@ run_server <- function(session, input, output) {
       class = 'cell-border stripe hover'
     ) %>%
       DT::formatStyle(
-        columns = 1:ncol(data),
+        columns = 1:ncol(print_data),
         fontSize = '12px'
       )
   })
