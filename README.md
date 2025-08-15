@@ -294,6 +294,10 @@ recommended for most purposes.
   `Total Accuracy = 100 - [(n incorrect values in the database) + (n omitted objects)(n properties)]/[n total data points in the ground truth]`
   The total accuracy of a prompt includes omissions.
   
+#### Download Prompt
+
+Once the predicted accuracy on the representative sample is sufficiently high (~95%), the prompt can be downloaded 
+as a .txt file for future use. 
 
 # Random sampling/ Validation/ Running the whole batch
 
@@ -303,10 +307,23 @@ random sample. Any changes to the prompt need to be re validated with an new ran
 
 #### Upload Schema, Prompt, and Batch
 
-### Sample Size
+Upload the the schema and prompt that was just engineered. Then upload your batch as an .xlsx file and select the 
+column that contains the unstructured text that needs to be extracted. 
 
+#### Sample Size/ Full runs
 
-Step 6.
+Select the sample size of the random sample size for validation. Samples ~100 are usually sufficient, however this 
+can very based on the predicted accuracy and your threshold accuracy. To run the full task, simply ingore this input.
+
+#### IP Address/Model/Context Window
+
+Input these parameters as you have done in the prompt engineering step. The context window will be suggested based on 
+the longest input in the sample/ full run. 
+
+#### Submit your query
+
+Submit your query to the llm, the progress of the task will be displayed. After the task has finished, the output 
+can be downloaded for validation or analysis. 
 
 # Example 1: Extraction of Kidney Lesions form radiology reports
 
