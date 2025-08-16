@@ -49,7 +49,7 @@ json_server <- function(input, output, session) {
       }
       
       #creation of anyof logic for nullable properties
-      if (!input$ob_req) {
+      if (input$ob_req) {
         prop_def <- list(
           anyOf = list(
             prop_def,
@@ -69,7 +69,7 @@ json_server <- function(input, output, session) {
       updateSelectInput(session, "format_type", selected = "")
       updateTextInput(session, "min_num", value = "")
       updateTextInput(session, "max_num", value = "")
-      updateCheckboxInput(session, "ob_req", value = FALSE)
+      updateCheckboxInput(session, "ob_req", value = TRUE)
     })
     
     #remove the last property from the order

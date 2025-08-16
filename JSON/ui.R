@@ -29,7 +29,7 @@ json_ui <- fluidPage(
         "right", trigger = "hover",
         options = list(container = "body")
       ),
-      textInput("prop_name", "Property Name"),
+      textInput("prop_name", "Property Name", placeholder = "snake_case_recommended"),
       selectInput("prop_type", "Property Type",
         choices = c("Select a type..." = "", "string", "number", "integer")),
       conditionalPanel(
@@ -88,7 +88,7 @@ json_ui <- fluidPage(
         textInput("min_num", "Minimum"),
         textInput("max_num", "Maximum")
       ),
-      checkboxInput("ob_req", "Null not allowed", value = FALSE),
+      checkboxInput("ob_req", "Allow Null", value = TRUE),
       fluidRow(
         column(4,
           actionButton("add_prop", "Add", class = "btn btn-success", width = "100%")
