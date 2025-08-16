@@ -1,7 +1,9 @@
 prompt_server <- function(input, output, session) {
     nested_colnames <- reactiveVal(NULL)
     nested_coltypes <- reactiveVal()
-    rv <- reactiveValues(test = NULL)
+    rv <- reactiveValues(test = NULL, df = NULL)
+    
+    
     
     output$example_file_ui <- renderUI({
       fileInput(("example_file"), "Upload Completed Examples (.xlsx)")
@@ -9,67 +11,21 @@ prompt_server <- function(input, output, session) {
     
     observeEvent(input$example_file, {
       req(input$example_file)
-      
       example_excel <- read_excel(input$example_file$datapath, col_names = TRUE)
-      
       df <- example_excel %>%
         nest(data = -examples)
-      
+      rv$df <- df  
       first_nested <- df$data[[1]]
-      
       nested_colnames(names(first_nested))
-
-      
-      # ext <- tools::file_ext(input$example_file$name)
-      # if (tolower(ext) != "rds") {
-      #   showModal(modalDialog(
-      #     title = "Invalid file type",
-      #     "Please upload a valid .rds file.",
-      #     easyClose = TRUE,
-      #     footer = modalButton("OK")
-      #   ))
-      #   
-      #   # Reset file input
-      #   output$example_file_ui <- renderUI({
-      #     fileInput("example_file", "Upload Example RDS File")
-      #   })
-      #   return()
-      # }
-      # 
-      # tryCatch({
-      #   df <- readRDS(input$example_file$datapath)
-      #   
-      #   if (!("data" %in% names(df)) || !is.data.frame(df$data[[1]])) {
-      #     showNotification("Invalid RDS structure: 'data' column with nested data frames is required.", type = "error")
-      #     return()
-      #   }
-      #   
-      #   first_nested <- df$data[[1]]
-      #   nested_colnames(names(first_nested))
-      #   
-      # }, error = function(e) {
-      #   showModal(modalDialog(
-      #     title = "Error reading file",
-      #     paste("The uploaded file could not be read as a valid .rds file:", e$message),
-      #     easyClose = TRUE,
-      #     footer = modalButton("OK")
-      #   ))
-      #   
-      #   # Reset file input
-      #   output$example_file_ui <- renderUI({
-      #     fileInput("example_file", "Upload Example RDS File")
-      #   })
-      # })
     })
+    
     
     get_ollama_models <- function(ip) {
       url <- paste0("http://", ip, ":11434/api/tags")
       res <- try(httr::GET(url), silent = TRUE)
-      
       if (inherits(res, "try-error") || httr::status_code(res) != 200) {
         return(NULL)
       }
-      
       parsed <- jsonlite::fromJSON(httr::content(res, as = "text", encoding = "UTF-8"))
       model_names <- parsed$models$name
       return(model_names)
@@ -78,7 +34,7 @@ prompt_server <- function(input, output, session) {
     observeEvent(input$llm_address, {
       models <- get_ollama_models(input$llm_address)
       if (is.null(models)) {
-        updateSelectInput(session, "llm_model", choices = c("Connection failed or no models found"))
+        updateSelectInput(session, "llm_model", choices = c("Connection failed"))
       } else {
         updateSelectInput(session, "llm_model", choices = models, selected = models[1])
       }
@@ -118,22 +74,22 @@ prompt_server <- function(input, output, session) {
     }
     
     output$word_count_info <- renderUI({
-      prompt_text <- collapsed_prompt()
-      req(prompt_text)
-      prompt_stats <- estimate_tokens(prompt_text)
-      longest_example <- ""
+      req(collapsed_prompt())
+      prompt_stats <- estimate_tokens(collapsed_prompt())
       example_stats <- list(words = 0, tokens = 0)
-      if (!is.null(input$example_file)) {
-        df <- readRDS(input$example_file$datapath)
-        if ("examples" %in% names(df)) {
-          word_counts <- sapply(df$examples, function(x) length(strsplit(x, "\\s+")[[1]]))
-          longest_example <- df$examples[which.max(word_counts)]
+      longest_example <- ""
+      if (!is.null(rv$df)) {
+        if ("examples" %in% names(rv$df)) {
+          word_counts <- sapply(rv$df$examples, function(x) length(strsplit(x, "\\s+")[[1]]))
+          idx_longest <- which.max(word_counts)
+          longest_example <- rv$df$examples[idx_longest]
           example_stats <- estimate_tokens(longest_example)
         }
       }
       combined_tokens <- prompt_stats$tokens + example_stats$tokens
       tagList(tags$b("Estimated Tokens:"), sprintf(" %d", combined_tokens))
     })
+    
     
     output$download_prompt <- downloadHandler(
       filename = function() {
@@ -175,7 +131,7 @@ prompt_server <- function(input, output, session) {
     
     observeEvent(input$submit_query, {
       req(input$example_file, input$json_file, nested_colnames())
-      test <- readRDS(input$example_file$datapath)
+      test <- rv$df
       schema_r <- jsonlite::fromJSON(input$json_file$datapath, simplifyVector = FALSE)
       
       prompt_texts <- c()
@@ -238,8 +194,7 @@ prompt_server <- function(input, output, session) {
           test[[paste0(output_column, "_time")]][i] <- duration
         }
       })
-      
-      progress_status("Model run complete. You may now download results.")
+
       
       llm_fixed <- test %>%
         select(examples, all_of(output_column)) %>%

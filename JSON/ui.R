@@ -14,7 +14,7 @@ json_ui <- fluidPage(
       bsPopover("schema_type_info", "More Information", 
         content = HTML("<b>Object</b> schemas extract a single row (object) of information from each unstructured text. <b>Array</b> schemas should be used when multiple rows (objects) could be extracted from a single unstructured text."
           ),
-        "right", trigger = "hover",
+        "right", trigger = "click",
         options = list(container = "body")
         ),
       tags$hr(),
@@ -26,7 +26,7 @@ json_ui <- fluidPage(
         ),
       bsPopover("add_properties_info", "More Information", 
         content = HTML("Add the properties of the objects you want to extract. All properties should have some level of formatting. Unconstrained properties are more likely to hallucinate and are highly discouraged."),
-        "right", trigger = "hover",
+        "right", trigger = "click",
         options = list(container = "body")
       ),
       textInput("prop_name", "Property Name", placeholder = "snake_case_recommended"),
@@ -43,7 +43,7 @@ json_ui <- fluidPage(
       ),
       bsPopover("enumerations_info", "More Information", content = HTML(
         "Enumerations are a list of possibe choices. <b>Left</b> and <b>Right</b> would force the LLM to resond only with <b>Left</b> or <b>Right</b>."),
-        "right", trigger = "hover",
+        "right", trigger = "click",
         options = list(container = "body")
       ),
       conditionalPanel(
@@ -70,7 +70,7 @@ json_ui <- fluidPage(
           "password (masked input)" = "password")
         ),
         bsPopover("format_info", "More Information", content = HTML("If applicable, choose a natively supported string format in JSON. All LLM responses for this property will conform to the format."),
-          "right", trigger = "hover",
+          "right", trigger = "click",
           options = list(container = "body")
         ),
         textInput("string_pat", label = list("Pattern (regex)",
@@ -80,7 +80,7 @@ json_ui <- fluidPage(
           )
       ),
         bsPopover("pattern_info", "More Information", content = HTML("If applicable, create your own custom string formatting using regular expressions. Start your regular expression with ^ and end with $. To allow <b>upper</b>, <b>posterior</b>, <b>upper lateral</b> <b>mid lateral posterior</b> but never <i>lateral upper</i>, input ^(upper|mid|lower)? ?(medial|lateral)? ?(anterior|posterior|midline)?$. All LLM responses for this property will conform to the format."),
-          "right", trigger = "hover",
+          "right", trigger = "click",
           options = list(container = "body")
         )),
       conditionalPanel(
