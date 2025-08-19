@@ -26,8 +26,36 @@ prompt_ui <-  fluidPage(
         ),
         tags$hr(),
         fluidRow(
-          column(2, textInput(("id_column"), "ID Column", value = "")),
-          column(3, textInput(("llm_context"), "Context window", value = "4000")),
+          column(2, textInput(("id_column"), label = list("ID Column",
+            bsButton("id_info", label = "",
+              icon = icon("info", lib = "font-awesome"),
+              style = "default", size = "extra-small")
+            ),
+            value = "")),
+          bsPopover("id_info", "More Information", 
+            content = HTML(paste("Only applicable for <b>array</b> schema.",
+              "For analysis, within each example, <b>objects</b> must be compared by an id column.",
+              "<b>Objects</b> will otherwise be compared by row order- which may be different from the key to the llm output."
+            )
+            ),
+            "right", trigger = "click",
+            options = list(container = "body")
+          ),
+          column(3, textInput(("llm_context"), label = list("Context window",
+            bsButton("context_info", label = "",
+              icon = icon("info", lib = "font-awesome"),
+              style = "default", size = "extra-small")
+            ), value = "4000")),
+          bsPopover("context_info", "More Information", 
+            content = HTML(paste("Context window is the working memory of the LLM.",
+              "Each query consists of a prompt + schema + example. A token is the smalled language unit the LLM understands. ",
+              "An estimated token count is given based on prompt word count and longest example, with ~0.75 tokens/word. Context widows are commonly rounded to the thousands.",
+              "Context windows that are too small will truncate the example/prompt. Context windows that are too large can lead to inneffecient LLM response times."
+            )
+            ),
+            "right", trigger = "click",
+            options = list(container = "body")
+          ),
           column(2, uiOutput(("word_count_info")))
         ),
         fluidRow(
